@@ -6,6 +6,10 @@
 package my_package;
 
 import javax.swing.JOptionPane;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints; // KINI ANG KULANG NIMO
+
 
 /**
  *
@@ -18,6 +22,12 @@ public class home extends javax.swing.JFrame {
      */
     public home() {
         initComponents();
+        // DIRI DAPIT: Ibutang ang color ug uban pang design settings
+        jLabel2.setBackground(new java.awt.Color(204, 0, 0));
+        
+        // Idugang sad ni para sigurado nga mo-center ang imong window
+        this.setLocationRelativeTo(null); 
+    
     }
 
     /**
@@ -36,10 +46,10 @@ public class home extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel2 = new RoundedLabel(50);
         jTextField1 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
 
@@ -48,6 +58,8 @@ public class home extends javax.swing.JFrame {
         jMenuItem2.setText("jMenuItem2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().add(filler1, new org.netbeans.lib.awtextra.AbsoluteConstraints(969, 65, -1, -1));
 
         jPanel2.setBackground(new java.awt.Color(255, 241, 193));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -80,52 +92,32 @@ public class home extends javax.swing.JFrame {
         });
         jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 40, 140, 40));
 
-        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 270, 520, 120));
+        jPanel2.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 300, 520, 120));
+
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/burgers.png"))); // NOI18N
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 140, 100, 70));
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/DRINKS.png"))); // NOI18N
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 120, 80, 90));
+
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/friess.png"))); // NOI18N
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 120, 80, 80));
 
         jLabel2.setBackground(new java.awt.Color(204, 0, 0));
         jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("FAST FOOD ORDERING SYSTEM");
-        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 470, 90));
-
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/burgers.png"))); // NOI18N
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 110, 100, 70));
-
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/friess.png"))); // NOI18N
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 90, 80, 80));
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/DRINKS.png"))); // NOI18N
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 90, 80, 90));
+        jLabel2.setText("RAY'S FAST FOOD");
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 190, 470, 60));
 
         jTextField1.setBackground(new java.awt.Color(204, 0, 0));
-        jPanel2.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 160, 440, 60));
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jPanel2.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 190, 340, 50));
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/logos.png"))); // NOI18N
-        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 180));
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/logo.png"))); // NOI18N
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 160, 140));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 850, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
-                .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(65, Short.MAX_VALUE)
-                .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(765, 765, 765))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(55, 55, 55)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 40, 750, 480));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -181,6 +173,28 @@ public class home extends javax.swing.JFrame {
             }
         });
     }
+    class RoundedLabel extends javax.swing.JLabel {
+    private int radius;
+    public RoundedLabel(int radius) {
+        this.radius = radius;
+        setOpaque(false); // Para dili makita ang square background
+    }
+    @Override
+protected void paintComponent(java.awt.Graphics g) {
+    java.awt.Graphics2D g2 = (java.awt.Graphics2D) g;
+    
+        // Kini nga linya para mahimong hamis ang kanto
+        // SAKTO NGA LINE 185 (Copy-Paste ni):
+    g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+
+    g2.setColor(getBackground());
+    
+    // Idrowing ang oblong shape
+    g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
+    
+    super.paintComponent(g);
+}
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;

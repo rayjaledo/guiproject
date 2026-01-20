@@ -16,24 +16,24 @@ public class SignUp extends javax.swing.JFrame {
      */
     public SignUp() {
     initComponents();
-
-    // 35 pixels nga space para dili matabunan ang black emoji
-    jTextField_FullName.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-        jTextField_FullName.getBorder(), 
-        javax.swing.BorderFactory.createEmptyBorder(0, 35, 0, 0)));
-
-    jTextField_Email.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-        jTextField_Email.getBorder(), 
-        javax.swing.BorderFactory.createEmptyBorder(0, 35, 0, 0)));
-
-    jPasswordField_Pass.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-        jPasswordField_Pass.getBorder(), 
-        javax.swing.BorderFactory.createEmptyBorder(0, 35, 0, 0)));
+// 1. Padding para magtupong ang tanang text sa luyo sa icon
+    javax.swing.border.Border padding = javax.swing.BorderFactory.createEmptyBorder(0, 35, 0, 0);
     
-    // Default blurd/gray color
+    jTextField_FullName.setBorder(javax.swing.BorderFactory.createCompoundBorder(jTextField_FullName.getBorder(), padding));
+    jTextField_Email.setBorder(javax.swing.BorderFactory.createCompoundBorder(jTextField_Email.getBorder(), padding));
+    jPasswordField1.setBorder(javax.swing.BorderFactory.createCompoundBorder(jPasswordField1.getBorder(), padding));
+
+    // 2. I-set ang "Placeholder" text ug color
+    jTextField_FullName.setText("Full Name");
+    jTextField_Email.setText("Email");
+    jPasswordField1.setText("Password");
+
     jTextField_FullName.setForeground(new java.awt.Color(153, 153, 153));
     jTextField_Email.setForeground(new java.awt.Color(153, 153, 153));
-    jPasswordField_Pass.setForeground(new java.awt.Color(153, 153, 153));
+    jPasswordField1.setForeground(new java.awt.Color(153, 153, 153));
+
+    // 3. MAO NI ANG IMPORTANTE: I-off ang tuldok para makita ang "Password" nga word
+    jPasswordField1.setEchoChar((char)0); 
 }
 
     /**
@@ -49,16 +49,16 @@ public class SignUp extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btn_SignUp = new javax.swing.JButton();
         jTextField5 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jTextField_FullName = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jPasswordField_Pass = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jTextField_Email = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        jPasswordField1 = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -75,16 +75,16 @@ public class SignUp extends javax.swing.JFrame {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/loginfries.png"))); // NOI18N
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 30, 50, 50));
 
-        jButton1.setBackground(new java.awt.Color(204, 0, 0));
-        jButton1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("SIGN UP");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btn_SignUp.setBackground(new java.awt.Color(204, 0, 0));
+        btn_SignUp.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        btn_SignUp.setForeground(new java.awt.Color(255, 255, 255));
+        btn_SignUp.setText("SIGN UP");
+        btn_SignUp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btn_SignUpActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 280, 160, 50));
+        jPanel1.add(btn_SignUp, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 280, 160, 50));
 
         jTextField5.setBackground(new java.awt.Color(204, 0, 0));
         jTextField5.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -118,17 +118,6 @@ public class SignUp extends javax.swing.JFrame {
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/pass.png"))); // NOI18N
         jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, 10, -1));
 
-        jPasswordField_Pass.setText("       Password");
-        jPasswordField_Pass.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                jPasswordField_PassFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                jPasswordField_PassFocusLost(evt);
-            }
-        });
-        jPanel1.add(jPasswordField_Pass, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 220, 190, 30));
-
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/fries4.png"))); // NOI18N
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 360, 40, 50));
 
@@ -152,17 +141,74 @@ public class SignUp extends javax.swing.JFrame {
         });
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 350, -1, -1));
 
+        jPasswordField1.setText("Password");
+        jPasswordField1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jPasswordField1FocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jPasswordField1FocusLost(evt);
+            }
+        });
+        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordField1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 220, 190, 30));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, 290, 410));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btn_SignUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SignUpActionPerformed
         // TODO add your handling code here:
-        SignUp signupForm = new SignUp();
-        signupForm.setVisible(true);
+       
+    String fullName = jTextField_FullName.getText().trim();
+    String email = jTextField_Email.getText().trim();
+    String password = String.valueOf(jPasswordField1.getPassword());
+
+    // 1. Validation Logic
+    if (fullName.equals("Full Name") || email.equals("Email") || 
+        password.equals("Password") || fullName.isEmpty() || email.isEmpty()) {
+        
+        javax.swing.JOptionPane.showMessageDialog(this, 
+            "Please fill in all fields!", 
+            "Validation Error", 
+            javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    try {
+        my_config.config conf = new my_config.config();
+        
+        // 2. Hash the password using your new method in config.java
+        String hashedPassword = conf.hashPassword(password);
+        
+        // 3. Match SQL columns to your database. 
+        // If your table has (full_name, email, password), use 3 '?' and 3 variables.
+        String sql = "INSERT INTO sign_up (full_name, email, password) VALUES (?, ?, ?)";
+        
+        // Ensure the count here is EXACTLY 3 to match the 3 '?' above
+        conf.addRecord(sql, fullName, email, hashedPassword);
+
+        // 4. Success handling
+        javax.swing.JOptionPane.showMessageDialog(this, "Account created successfully!");
+        
+        Login loginForm = new Login();
+        loginForm.setVisible(true);
+        loginForm.pack();
+        loginForm.setLocationRelativeTo(null);
         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+        
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(this, 
+            "Database Error: " + e.getMessage(), 
+            "Error", 
+            javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_btn_SignUpActionPerformed
 
     private void jTextField_FullNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField_FullNameFocusGained
         // TODO add your handling code here:
@@ -180,22 +226,6 @@ public class SignUp extends javax.swing.JFrame {
     jTextField_FullName.setForeground(new java.awt.Color(153,153,153)); 
 }
     }//GEN-LAST:event_jTextField_FullNameFocusLost
-
-    private void jPasswordField_PassFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordField_PassFocusGained
-        // TODO add your handling code here:
-        if(jPasswordField_Pass.getText().trim().equals("Password")){
-    jPasswordField_Pass.setText("");
-    jPasswordField_Pass.setForeground(new java.awt.Color(0,0,0));
-}
-    }//GEN-LAST:event_jPasswordField_PassFocusGained
-
-    private void jPasswordField_PassFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordField_PassFocusLost
-        // TODO add your handling code here:
-        if(jPasswordField_Pass.getText().trim().isEmpty()){
-    jPasswordField_Pass.setText("        Password");
-    jPasswordField_Pass.setForeground(new java.awt.Color(153,153,153));
-}
-    }//GEN-LAST:event_jPasswordField_PassFocusLost
 
     private void jTextField_EmailFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField_EmailFocusGained
         // TODO add your handling code here:
@@ -226,15 +256,45 @@ public class SignUp extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jTextField_FullNameActionPerformed
 
+    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+        // TODO add your handling code here:
+        if (String.valueOf(jPasswordField1.getPassword()).equals("Password")) {
+        jPasswordField1.setText("");
+        jPasswordField1.setForeground(java.awt.Color.BLACK);
+        jPasswordField1.setEchoChar('*');
+    }
+
+       
+    }//GEN-LAST:event_jPasswordField1ActionPerformed
+
+    private void jPasswordField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordField1FocusGained
+        // TODO add your handling code here:
+       if (String.valueOf(jPasswordField1.getPassword()).equals("Password")) {
+    jPasswordField1.setText("");
+    jPasswordField1.setEchoChar('*'); // Magsugod na ang masking
+    jPasswordField1.setForeground(java.awt.Color.BLACK);
+
+    
+    }
+           
+        
+    }//GEN-LAST:event_jPasswordField1FocusGained
+
+    private void jPasswordField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordField1FocusLost
+        // TODO add your handling code here:
+        if (jPasswordField1.getPassword().length == 0) {
+    jPasswordField1.setText("Password");
+    jPasswordField1.setEchoChar((char)0); // Mobalik ang word nga "Password"
+    jPasswordField1.setForeground(new java.awt.Color(153,153,153));
+}
+    }//GEN-LAST:event_jPasswordField1FocusLost
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+       
+       
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -262,7 +322,7 @@ public class SignUp extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btn_SignUp;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -272,7 +332,7 @@ public class SignUp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jPasswordField_Pass;
+    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField_Email;
     private javax.swing.JTextField jTextField_FullName;
