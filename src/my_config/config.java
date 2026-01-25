@@ -25,6 +25,7 @@ public class config {
             System.out.println("Connection Failed: " + e);
         }
         return con;
+        
     }
 
     // Pamaagi para sa Sign Up (Original Code)
@@ -96,9 +97,25 @@ public class config {
         System.out.println("Auth Error: " + e.getMessage());
         return false;
     }
+   }
+
+    public boolean isEmailTaken(String email) {
+        // Mogamit ta og '?' para sa seguridad (SQL Injection prevention)
+        String sql = "SELECT email FROM sign_up WHERE email = ?";
+        try (Connection conn = connectDB(); 
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                // Kon naay mugawas nga resulta, pasabot Taken ang email
+                return rs.next(); 
+            }
+        } catch (SQLException e) {
+            System.out.println("Error sa pag-check sa email: " + e.getMessage());
+            return false;
+        }
 }
 }
-  
 
 
   

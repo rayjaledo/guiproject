@@ -16,6 +16,9 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
     initComponents();
+    jPasswordField1.setEchoChar('*');
+    jLabelEye.setIcon(new javax.swing.ImageIcon(
+    getClass().getResource("/Images/eye_close.png")));
 
    // Parehas nga padding (35 pixels) para tupong gihapon sa Login
     javax.swing.border.Border padding = javax.swing.BorderFactory.createEmptyBorder(0, 35, 0, 0);
@@ -59,6 +62,7 @@ public class Login extends javax.swing.JFrame {
         jTextField_User = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jLabelEye = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -132,6 +136,14 @@ public class Login extends javax.swing.JFrame {
         });
         panel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 327, 210, -1));
 
+        jLabelEye.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/eye_close.png"))); // NOI18N
+        jLabelEye.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabelEyeMouseClicked(evt);
+            }
+        });
+        panel1.add(jLabelEye, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 220, -1, 10));
+
         jPasswordField1.setText("Password");
         jPasswordField1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -176,8 +188,18 @@ public class Login extends javax.swing.JFrame {
             conf.addRecord(sqlLog, user);
             
             javax.swing.JOptionPane.showMessageDialog(null, "Login Successful!");
-            new home().setVisible(true);
+
+            // --- INSERTED/UPDATED CODE START ---
+            // Paghimo og instance sa imong Dashboard
+            customerdash dash = new customerdash(); 
+
+            // I-pakita ang Dashboard
+            dash.setVisible(true); 
+
+            // I-close ang kasamtangan nga Log In frame
             this.dispose();
+            // --- INSERTED/UPDATED CODE END ---
+            
         } catch (Exception e) {
             System.out.println("Error recording session: " + e.getMessage());
         }
@@ -232,12 +254,28 @@ public class Login extends javax.swing.JFrame {
     private void jPasswordField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordField1FocusLost
         // TODO add your handling code here:
         if (jPasswordField1.getPassword().length == 0) {
-    jPasswordField1.setText("Password");
-    jPasswordField1.setForeground(new java.awt.Color(153,153,153));
-    jPasswordField1.setEchoChar((char) 0);
+        jPasswordField1.setText("Password");
+        jPasswordField1.setForeground(new java.awt.Color(153,153,153));
+        jPasswordField1.setEchoChar((char) 0); // Always 0 for the placeholder text
+    
 }
 
     }//GEN-LAST:event_jPasswordField1FocusLost
+
+    private void jLabelEyeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelEyeMouseClicked
+        // Check if the password is currently visible (EchoChar is 0)
+if (jPasswordField1.getEchoChar() == (char)0) {
+    // Hide it again
+    jPasswordField1.setEchoChar('*');
+    // Optional: Change the icon back to a "closed eye" if you have one
+    // jLabel_Eye.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/eye_closed.png")));
+} else {
+    // Show the password
+    jPasswordField1.setEchoChar((char)0);
+    // Optional: Change the icon to an "open eye"
+    // jLabel_Eye.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/eye_open.png")));
+}
+    }//GEN-LAST:event_jLabelEyeMouseClicked
 
     /**
      * @param args the command line arguments
@@ -284,6 +322,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabelEye;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField jTextField1;

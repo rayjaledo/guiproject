@@ -16,6 +16,10 @@ public class SignUp extends javax.swing.JFrame {
      */
     public SignUp() {
     initComponents();
+    jLabelEye.setVisible(true);
+    jLabelEye.setEnabled(true);
+    jLabelEye.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    jLabelEye.getParent().setComponentZOrder(jLabelEye, 0);
 // 1. Padding para magtupong ang tanang text sa luyo sa icon
     javax.swing.border.Border padding = javax.swing.BorderFactory.createEmptyBorder(0, 35, 0, 0);
     
@@ -58,6 +62,7 @@ public class SignUp extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jTextField_Email = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        jLabelEye = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -141,6 +146,14 @@ public class SignUp extends javax.swing.JFrame {
         });
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 350, -1, -1));
 
+        jLabelEye.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/eye_close.png"))); // NOI18N
+        jLabelEye.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabelEyeMouseClicked(evt);
+            }
+        });
+        jPanel1.add(jLabelEye, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 230, 10, 10));
+
         jPasswordField1.setText("Password");
         jPasswordField1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -165,49 +178,57 @@ public class SignUp extends javax.swing.JFrame {
     private void btn_SignUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SignUpActionPerformed
         // TODO add your handling code here:
        
-    String fullName = jTextField_FullName.getText().trim();
-    String email = jTextField_Email.getText().trim();
-    String password = String.valueOf(jPasswordField1.getPassword());
+  // 1. Kuhaa ang data gikan sa text fields
+String fullName = jTextField_FullName.getText().trim();
+String email = jTextField_Email.getText().trim();
+String password = String.valueOf(jPasswordField1.getPassword());
 
-    // 1. Validation Logic
-    if (fullName.equals("Full Name") || email.equals("Email") || 
-        password.equals("Password") || fullName.isEmpty() || email.isEmpty()) {
-        
+// 2. Validation Logic
+if (fullName.equals("Full Name") || email.equals("Email") || 
+    password.equals("Password") || fullName.isEmpty() || email.isEmpty()) {
+    
+    javax.swing.JOptionPane.showMessageDialog(this, 
+        "Please fill in all fields!", 
+        "Validation Error", 
+        javax.swing.JOptionPane.ERROR_MESSAGE);
+    return;
+}
+
+try {
+    my_config.config conf = new my_config.config();
+    
+    // 3. KINI ANG SAKTONG PAAGI SA PAG-CHECK (Email lang ang i-pasa)
+    // Ang imong config.java nagkinahanglan og 'email' string, dili ang tibuok query.
+    if (conf.isEmailTaken(email)) { 
         javax.swing.JOptionPane.showMessageDialog(this, 
-            "Please fill in all fields!", 
-            "Validation Error", 
-            javax.swing.JOptionPane.ERROR_MESSAGE);
-        return;
+            "Email is already registered!", 
+            "Duplicate Email", 
+            javax.swing.JOptionPane.WARNING_MESSAGE);
+        return; 
     }
 
-    try {
-        my_config.config conf = new my_config.config();
-        
-        // 2. Hash the password using your new method in config.java
-        String hashedPassword = conf.hashPassword(password);
-        
-        // 3. Match SQL columns to your database. 
-        // If your table has (full_name, email, password), use 3 '?' and 3 variables.
-        String sql = "INSERT INTO sign_up (full_name, email, password) VALUES (?, ?, ?)";
-        
-        // Ensure the count here is EXACTLY 3 to match the 3 '?' above
-        conf.addRecord(sql, fullName, email, hashedPassword);
+    // 4. Hash the password
+    String hashedPassword = conf.hashPassword(password);
+    
+    // 5. Match SQL columns (full_name, email, password)
+    String sql = "INSERT INTO sign_up (full_name, email, password) VALUES (?, ?, ?)";
+    
+    // I-save ang record gamit ang imong addRecord method
+    conf.addRecord(sql, fullName, email, hashedPassword);
 
-        // 4. Success handling
-        javax.swing.JOptionPane.showMessageDialog(this, "Account created successfully!");
-        
-        Login loginForm = new Login();
-        loginForm.setVisible(true);
-        loginForm.pack();
-        loginForm.setLocationRelativeTo(null);
-        this.dispose();
-        
-    } catch (Exception e) {
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "Database Error: " + e.getMessage(), 
-            "Error", 
-            javax.swing.JOptionPane.ERROR_MESSAGE);
-    }
+    // 6. Success handling ug transition sa Login
+    Login loginForm = new Login();
+    loginForm.setVisible(true);
+    loginForm.pack();
+    loginForm.setLocationRelativeTo(null);
+    this.dispose();
+    
+} catch (Exception e) {
+    javax.swing.JOptionPane.showMessageDialog(this, 
+        "System Error: " + e.getMessage(), 
+        "Error", 
+        javax.swing.JOptionPane.ERROR_MESSAGE);
+}
     }//GEN-LAST:event_btn_SignUpActionPerformed
 
     private void jTextField_FullNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField_FullNameFocusGained
@@ -282,12 +303,28 @@ public class SignUp extends javax.swing.JFrame {
 
     private void jPasswordField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordField1FocusLost
         // TODO add your handling code here:
-        if (jPasswordField1.getPassword().length == 0) {
+        if (String.valueOf(jPasswordField1.getPassword()).isEmpty()) {
     jPasswordField1.setText("Password");
-    jPasswordField1.setEchoChar((char)0); // Mobalik ang word nga "Password"
+    jPasswordField1.setEchoChar((char)0); // I-pakita ang pulong nga "Password"
     jPasswordField1.setForeground(new java.awt.Color(153,153,153));
+
 }
     }//GEN-LAST:event_jPasswordField1FocusLost
+
+    private void jLabelEyeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelEyeMouseClicked
+        // Check kung ang text kay placeholder ba
+String currentPass = String.valueOf(jPasswordField1.getPassword());
+
+if (!currentPass.equals("Password")) {
+    if (jPasswordField1.getEchoChar() == (char)0) {
+        // I-hide pag-usab
+        jPasswordField1.setEchoChar('*');
+    } else {
+        // I-pakita ang password
+        jPasswordField1.setEchoChar((char)0);
+    }
+}
+    }//GEN-LAST:event_jLabelEyeMouseClicked
 
     /**
      * @param args the command line arguments
@@ -331,6 +368,7 @@ public class SignUp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabelEye;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField jTextField5;
