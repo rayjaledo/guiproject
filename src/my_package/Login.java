@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package my_package;
+import Admin.admindash;
+import my_package.customerdash;
 
 /**
  *
@@ -169,10 +171,10 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // 1. Get the data from your text fields
-    String user = jTextField_User.getText().trim(); 
+ String user = jTextField_User.getText().trim(); 
     String pass = String.valueOf(jPasswordField1.getPassword());
 
-    // Validation to prevent empty or placeholder inputs
+    // Validation para sa empty o placeholder inputs
     if (user.equals("Username") || pass.equals("Password") || user.isEmpty()) {
         javax.swing.JOptionPane.showMessageDialog(this, "Please enter your credentials!");
         return;
@@ -180,31 +182,34 @@ public class Login extends javax.swing.JFrame {
 
     my_config.config conf = new my_config.config();
 
-    // authenticateUser hashes the 'pass' and checks the 'sign_up' table
-    if (conf.authenticateUser(user, pass)) {
+    // 2. Kani nga part ang gi-fix: Pagkuha sa role gamit ang imong bag-ong config method
+    String role = conf.getUserRole(user, pass); 
+
+    if (role != null) { // Kung successful ang login
         try {
-            // ONLY save the username and the time. No password needed here.
+            // I-record ang login session
             String sqlLog = "INSERT INTO login (full_name, login_time) VALUES (?, CURRENT_TIMESTAMP)";
             conf.addRecord(sqlLog, user);
             
             javax.swing.JOptionPane.showMessageDialog(null, "Login Successful!");
 
-            // --- INSERTED/UPDATED CODE START ---
-            // Paghimo og instance sa imong Dashboard
-            customerdash dash = new customerdash(); 
+            // 3. Redirection logic base sa u_type
+            if (role.equalsIgnoreCase("Admin")) {
+                Admin.admindash ads = new Admin.admindash(); 
+                ads.setVisible(true);
+            } else {
+                customerdash dash = new customerdash();  
+                dash.setVisible(true);
+            }
 
-            // I-pakita ang Dashboard
-            dash.setVisible(true); 
-
-            // I-close ang kasamtangan nga Log In frame
-            this.dispose();
-            // --- INSERTED/UPDATED CODE END ---
+            this.dispose(); // I-close ang Login window
             
         } catch (Exception e) {
             System.out.println("Error recording session: " + e.getMessage());
         }
     } else {
-        javax.swing.JOptionPane.showMessageDialog(null, "Invalid Credentials!");
+        // Error message kung mali ang credentials o wala ma-set ang u_status isip 'Active'
+        javax.swing.JOptionPane.showMessageDialog(null, "Invalid Credentials or Account Pending!");
     }
     }//GEN-LAST:event_jButton1ActionPerformed
 

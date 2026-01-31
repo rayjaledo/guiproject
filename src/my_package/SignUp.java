@@ -211,10 +211,10 @@ try {
     String hashedPassword = conf.hashPassword(password);
     
     // 5. Match SQL columns (full_name, email, password)
-    String sql = "INSERT INTO sign_up (full_name, email, password) VALUES (?, ?, ?)";
+    String sql = "INSERT INTO sign_up (full_name, email, password, u_type, u_status) VALUES (?, ?, ?, ?, ?)";
     
     // I-save ang record gamit ang imong addRecord method
-    conf.addRecord(sql, fullName, email, hashedPassword);
+    conf.addRecord(sql, fullName, email, hashedPassword, "Customer", "Active");
 
     // 6. Success handling ug transition sa Login
     Login loginForm = new Login();

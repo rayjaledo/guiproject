@@ -264,7 +264,7 @@ public class customerdash extends javax.swing.JFrame {
         jTextField5.setText("Desserts");
         getContentPane().add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 130, 40));
 
-        jTextPane1.setBackground(new java.awt.Color(255, 204, 153));
+        jTextPane1.setBackground(new java.awt.Color(249, 231, 159));
         jScrollPane1.setViewportView(jTextPane1);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 150, 410));

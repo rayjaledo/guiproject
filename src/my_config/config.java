@@ -5,7 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.JOptionPane;
+import java.sql.Statement; // Gikinahanglan para sa Statement stmt
+import javax.swing.JOptionPane; // Para sa pop-up messages
+import javax.swing.JTable; // Para makaila ang Java sa imong table
+import net.proteanit.sql.DbUtils; // Para sa resultSetToTableModel
 
 /**
  *
@@ -115,7 +118,58 @@ public class config {
             return false;
         }
 }
+// I-insert kini sa ubos sa imong isEmailTaken method
+   public String getUserRole(String username, String password) {
+        String hashedInput = hashPassword(password); 
+        // I-add kini para makita nimo sa Output window kung unsa ang gi-generate nga hash
+        
+        
+        String sql = "SELECT u_type FROM sign_up WHERE full_name = ? AND password = ? AND u_status = 'Active'";
+        
+        try (Connection conn = connectDB(); 
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, username);
+            pstmt.setString(2, hashedInput);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("u_type"); 
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Role Error: " + e.getMessage());
+        }
+        return null; 
+    }
+   public void displayData(String sql, javax.swing.JTable table) {
+    try (Connection conn = connectDB();
+         PreparedStatement pstmt = conn.prepareStatement(sql);
+         ResultSet rs = pstmt.executeQuery()) {
+        
+        // This line automatically maps the Resultset to your JTable
+        table.setModel(DbUtils.resultSetToTableModel(rs));
+        
+    } catch (SQLException e) {
+        System.out.println("Error displaying data: " + e.getMessage());
+    }
 }
 
-
-  
+   // FIXED: Gigamit ang connectDB() para makuha ang connection
+   public int updateData(String sql) {
+    int num = 0;
+    try (Connection conn = connectDB(); 
+         PreparedStatement pst = conn.prepareStatement(sql)) {
+        
+        num = pst.executeUpdate(); // I-run ang update
+        if (num > 0) {
+            JOptionPane.showMessageDialog(null, "Updated Successfully!");
+        }
+    } catch (SQLException e) {
+        System.out.println("Update Error: " + e.getMessage());
+    }
+    return num;
+}
+   
+    
+}

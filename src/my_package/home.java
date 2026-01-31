@@ -8,7 +8,7 @@ package my_package;
 import javax.swing.JOptionPane;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints; // KINI ANG KULANG NIMO
+import java.awt.RenderingHints; 
 import javax.swing.JPanel;
 
 
