@@ -164,7 +164,7 @@ public class Login extends javax.swing.JFrame {
 
         jPanel1.add(panel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, -1, 397));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 10, 380, 450));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 0, 380, 450));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -185,28 +185,28 @@ public class Login extends javax.swing.JFrame {
     // 2. Kani nga part ang gi-fix: Pagkuha sa role gamit ang imong bag-ong config method
     String role = conf.getUserRole(user, pass); 
 
-    if (role != null) { // Kung successful ang login
+    if (role != null) { 
         try {
-            // I-record ang login session
-            String sqlLog = "INSERT INTO login (full_name, login_time) VALUES (?, CURRENT_TIMESTAMP)";
-            conf.addRecord(sqlLog, user);
-            
-            javax.swing.JOptionPane.showMessageDialog(null, "Login Successful!");
+    // 1. Siguruha nga "login" ra ang table name, dili "login_logs"
+    String sqlLog = "INSERT INTO login (full_name, login_time) VALUES (?, CURRENT_TIMESTAMP)";
+    conf.recordSession(sqlLog, user); 
+    
+    javax.swing.JOptionPane.showMessageDialog(null, "Login Successful!");
 
-            // 3. Redirection logic base sa u_type
-            if (role.equalsIgnoreCase("Admin")) {
-                Admin.admindash ads = new Admin.admindash(); 
-                ads.setVisible(true);
-            } else {
-                customerdash dash = new customerdash();  
-                dash.setVisible(true);
-            }
+    if (role.equalsIgnoreCase("Admin")) {
+        // 2. Siguruha nga husto ang package name 'Admin'
+        Admin.admindash adm = new Admin.admindash();
+        adm.setVisible(true);
+    } else {
+        new customerdash().setVisible(true);
+    }
+    this.dispose();
 
-            this.dispose(); // I-close ang Login window
-            
-        } catch (Exception e) {
-            System.out.println("Error recording session: " + e.getMessage());
-        }
+} catch (Exception e) {
+    // 3. USBA KINI: Para ipakita sa Java ang tinuod nga error gikan sa SQL
+    System.out.println("Actual SQL Error: " + e.getMessage()); 
+    e.printStackTrace(); 
+}
     } else {
         // Error message kung mali ang credentials o wala ma-set ang u_status isip 'Active'
         javax.swing.JOptionPane.showMessageDialog(null, "Invalid Credentials or Account Pending!");

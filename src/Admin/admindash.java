@@ -30,21 +30,26 @@ ResultSet rs = null;
     }
     public void refreshTable() {
         my_config.config conf = new my_config.config();
-        conf.displayData("SELECT p_id, p_name, p_category, p_price FROM products", productTable);
     
+    // 1. I-display ang data gikan sa DB
+    // Siguruha nga ang SQL query husto
+    conf.displayData("SELECT p_id as 'ID', p_name as 'Product Name', p_category as 'Category', p_price as 'Price' FROM products", productTable);
     
-   
-        
-        // Apply button renderers
-productTable.getColumn("Edit").setCellRenderer(new ButtonRenderer("Edit"));
-productTable.getColumn("Delete").setCellRenderer(new ButtonRenderer("Delete"));
+    // 2. I-ADD PAG-USAB ANG BUTTON COLUMNS (Kini ang kulang!)
+    // Human sa displayData, kinahanglan nato i-insert ang "Edit" ug "Delete" columns sa model
+    DefaultTableModel model = (DefaultTableModel) productTable.getModel();
+    model.addColumn("Edit");
+    model.addColumn("Delete");
 
-// Apply button editors (clickable)
-productTable.getColumn("Edit").setCellEditor(new ButtonEditor(productTable, "Edit"));
-productTable.getColumn("Delete").setCellEditor(new ButtonEditor(productTable, "Delete"));
+    // 3. I-apply ang renderers ug editors
+    // Siguruha nga ang text "Edit" ug "Delete" match sa imong column names sa taas
+    productTable.getColumn("Edit").setCellRenderer(new ButtonRenderer("Edit"));
+    productTable.getColumn("Delete").setCellRenderer(new ButtonRenderer("Delete"));
 
+    productTable.getColumn("Edit").setCellEditor(new ButtonEditor(productTable, "Edit"));
+    productTable.getColumn("Delete").setCellEditor(new ButtonEditor(productTable, "Delete"));
 // Add sample data
-DefaultTableModel model = (DefaultTableModel) productTable.getModel();
+
 
 model.addRow(new Object[]{
     1, "Cheeseburger", "Burgers", "₱75", "Edit", "Delete"
@@ -242,32 +247,7 @@ model.addRow(new Object[]{
     }//GEN-LAST:event_viewusersMouseClicked
 
     private void AddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddProductActionPerformed
-    String name = txt_pname.getText();
-    String category = txt_pcategory.getText();
-    String price = txt_pprice.getText();
-
-    if(name.isEmpty() || category.isEmpty() || price.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Please fill up all fields!");
-    } else {
-        String sql = "INSERT INTO products (p_name, p_category, p_price) VALUES (?, ?, ?)";
-        my_config.config conf = new my_config.config();
-        
-        // I-save ang record
-        conf.addRecord(sql, name, category, price);
-        
-        // KINI ANG AUTOMATIC REFRESH
-        refreshTable(); 
-        
-        // Limpyohan ang textfields
-        txt_pname.setText("");
-        txt_pcategory.setText("");
-        txt_pprice.setText("");
-    }
-     
-
-
-
-
+  
     }//GEN-LAST:event_AddProductActionPerformed
 
     private void viewusersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewusersActionPerformed

@@ -170,6 +170,18 @@ public class config {
     }
     return num;
 }
+   public void recordSession(String sql, Object... values) {
+    try (Connection conn = connectDB(); 
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        for (int i = 0; i < values.length; i++) {
+            pstmt.setString(i + 1, values[i].toString());
+        }
+        pstmt.executeUpdate();
+    } catch (SQLException e) {
+        // Ayaw i-type og manual ang error message, gamita ang e.getMessage()
+        System.out.println("SQL Error sa Record Session: " + e.getMessage());
+    }
+}
    
     
 }
