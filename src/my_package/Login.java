@@ -6,6 +6,7 @@
 package my_package;
 import Admin.admindash;
 import my_package.customerdash;
+import Staff.staffdash;
 
 /**
  *
@@ -171,7 +172,8 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // 1. Get the data from your text fields
- String user = jTextField_User.getText().trim(); 
+        
+    String user = jTextField_User.getText().trim(); 
     String pass = String.valueOf(jPasswordField1.getPassword());
 
     // Validation para sa empty o placeholder inputs
@@ -197,7 +199,13 @@ public class Login extends javax.swing.JFrame {
         // 2. Siguruha nga husto ang package name 'Admin'
         Admin.admindash adm = new Admin.admindash();
         adm.setVisible(true);
-    } else {
+    } 
+    else if (role.equalsIgnoreCase("Staff")) {
+                // Siguruha nga ang package name sa staffdash husto (e.g., Staff.staffdash)
+                Staff.staffdash stf = new Staff.staffdash(); 
+                stf.setVisible(true);
+    }
+    else {
         new customerdash().setVisible(true);
     }
     this.dispose();
