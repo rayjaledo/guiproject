@@ -11,22 +11,30 @@ import my_package.ButtonRenderer;
 import java.sql.*; 
 import net.proteanit.sql.DbUtils; 
 import javax.swing.JOptionPane; 
+import Admin.AdminProfile;
+
 
 /**
  *
  * @author pc
  */
 public class admindash extends javax.swing.JFrame {
-    Connection conn = null;
+    String loggedInUser;
+Connection conn = null;
 PreparedStatement pst = null;
 ResultSet rs = null;
 
     /**
      * Creates new form admindash
      */
-    public admindash() {
+    public admindash(String user) {
         initComponents();
-        refreshTable(); // 2. I-call kini diri para inig abli, naay data dayon
+    this.loggedInUser = user;
+    refreshTable();
+    }
+
+    admindash() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     public void refreshTable() {
         my_config.config conf = new my_config.config();
@@ -103,6 +111,7 @@ model.addRow(new Object[]{
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jTextField1.setEditable(false);
         jTextField1.setBackground(new java.awt.Color(204, 0, 0));
         jTextField1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jTextField1.setForeground(new java.awt.Color(255, 255, 255));
@@ -119,19 +128,19 @@ model.addRow(new Object[]{
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel2.setText("Products");
-        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 60, 30));
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 60, 30));
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel3.setText("Staff Accounts");
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, -1, -1));
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, -1, -1));
 
         jLabel4.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel4.setText("Orders");
-        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, -1, -1));
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel5.setText("Sales Reports");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 90, -1));
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, 90, -1));
 
         lbl_logout.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbl_logout.setText("Logout");
@@ -140,7 +149,7 @@ model.addRow(new Object[]{
                 lbl_logoutMouseClicked(evt);
             }
         });
-        jPanel2.add(lbl_logout, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 50, -1));
+        jPanel2.add(lbl_logout, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 50, -1));
 
         jLabel7.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel7.setText("Admin Profile");
@@ -149,13 +158,14 @@ model.addRow(new Object[]{
                 jLabel7MouseClicked(evt);
             }
         });
-        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 90, -1));
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 90, -1));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 130, 420));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jTextField2.setEditable(false);
         jTextField2.setBackground(new java.awt.Color(204, 0, 0));
         jTextField2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jTextField2.setForeground(new java.awt.Color(255, 255, 255));
@@ -167,6 +177,7 @@ model.addRow(new Object[]{
         jLabel6.setText("Manage Products");
         jPanel3.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 140, -1));
 
+        AddProduct.setEditable(false);
         AddProduct.setBackground(new java.awt.Color(255, 153, 0));
         AddProduct.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         AddProduct.setForeground(new java.awt.Color(255, 255, 255));
@@ -179,6 +190,7 @@ model.addRow(new Object[]{
         });
         jPanel3.add(AddProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, 120, 30));
 
+        jTextField4.setEditable(false);
         jTextField4.setBackground(new java.awt.Color(255, 153, 0));
         jTextField4.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         jTextField4.setForeground(new java.awt.Color(255, 255, 255));
@@ -186,6 +198,7 @@ model.addRow(new Object[]{
         jTextField4.setText("Manage Categories");
         jPanel3.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 70, 120, 30));
 
+        jTextField5.setEditable(false);
         jTextField5.setBackground(new java.awt.Color(255, 153, 0));
         jTextField5.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         jTextField5.setForeground(new java.awt.Color(255, 255, 255));
@@ -193,6 +206,7 @@ model.addRow(new Object[]{
         jTextField5.setText("View Sales Reports");
         jPanel3.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 70, 120, 30));
 
+        jTextField6.setEditable(false);
         jTextField6.setBackground(new java.awt.Color(255, 153, 0));
         jTextField6.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         jTextField6.setForeground(new java.awt.Color(255, 255, 255));
@@ -200,6 +214,7 @@ model.addRow(new Object[]{
         jTextField6.setText("View Orders");
         jPanel3.add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 70, 110, 30));
 
+        viewusers.setEditable(false);
         viewusers.setBackground(new java.awt.Color(255, 153, 0));
         viewusers.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         viewusers.setForeground(new java.awt.Color(255, 255, 255));
@@ -282,7 +297,7 @@ model.addRow(new Object[]{
     }//GEN-LAST:event_lbl_logoutMouseClicked
 
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
-        AdminProfile profile = new AdminProfile();
+        AdminProfile profile = new AdminProfile(loggedInUser);
     profile.setVisible(true);
     this.dispose();
     }//GEN-LAST:event_jLabel7MouseClicked
@@ -317,7 +332,7 @@ model.addRow(new Object[]{
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new admindash().setVisible(true);
+                new admindash("admin").setVisible(true);
             }
         });
         

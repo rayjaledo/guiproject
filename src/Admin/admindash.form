@@ -43,6 +43,7 @@
       <SubComponents>
         <Component class="javax.swing.JTextField" name="jTextField1">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="cc" type="rgb"/>
             </Property>
@@ -99,7 +100,7 @@
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="20" y="70" width="60" height="30"/>
+                  <AbsoluteConstraints x="20" y="100" width="60" height="30"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -112,7 +113,7 @@
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="20" y="120" width="-1" height="-1"/>
+                  <AbsoluteConstraints x="20" y="140" width="-1" height="-1"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -125,7 +126,7 @@
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="20" y="160" width="-1" height="-1"/>
+                  <AbsoluteConstraints x="20" y="180" width="-1" height="-1"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -138,7 +139,7 @@
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="20" y="200" width="90" height="-1"/>
+                  <AbsoluteConstraints x="20" y="220" width="90" height="-1"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -154,7 +155,7 @@
               </Events>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="20" y="270" width="50" height="-1"/>
+                  <AbsoluteConstraints x="20" y="260" width="50" height="-1"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -170,7 +171,7 @@
               </Events>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="20" y="240" width="90" height="-1"/>
+                  <AbsoluteConstraints x="20" y="70" width="90" height="-1"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -194,6 +195,7 @@
           <SubComponents>
             <Component class="javax.swing.JTextField" name="jTextField2">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="0" red="cc" type="rgb"/>
                 </Property>
@@ -227,6 +229,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="AddProduct">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="99" red="ff" type="rgb"/>
                 </Property>
@@ -250,6 +253,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="jTextField4">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="99" red="ff" type="rgb"/>
                 </Property>
@@ -270,6 +274,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="jTextField5">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="99" red="ff" type="rgb"/>
                 </Property>
@@ -290,6 +295,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="jTextField6">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="99" red="ff" type="rgb"/>
                 </Property>
@@ -310,6 +316,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="viewusers">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="99" red="ff" type="rgb"/>
                 </Property>

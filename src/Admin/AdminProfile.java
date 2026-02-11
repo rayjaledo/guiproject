@@ -5,6 +5,22 @@
  */
 package Admin;
 
+import java.awt.Image;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author USER41
@@ -14,11 +30,66 @@ public class AdminProfile extends javax.swing.JFrame {
     /**
      * Creates new form AdminProfile
      */
-    public AdminProfile() {
+    private String loggedInUser;
+    private String destinationPath;
+    public AdminProfile(String user) {
         initComponents();
+        this.loggedInUser = user;
+        loadUserData();
         
     }
+private void loadUserData() {
+    try {
+        my_config.config conf = new my_config.config();
+        // Gamita ang connectDB() kay mao ni ang naa sa imong config class
+        java.sql.Connection conn = conf.connectDB(); 
 
+        // Siguruha nga husto ang table name (sign_up)
+        String sql = "SELECT full_name, email, profile_picture FROM sign_up WHERE full_name = ?";
+        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, loggedInUser);
+
+        java.sql.ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            jTextField2.setText(rs.getString("full_name"));
+            jTextField3.setText(rs.getString("email"));
+            
+            String imagePath = rs.getString("profile_picture");
+            if (imagePath != null && !imagePath.isEmpty()) {
+                // Tawgon ang makeCircleImage para mahimong lingin ang picture
+                ImageIcon circleIcon = makeCircleImage(imagePath, lbl_image.getWidth());
+                lbl_image.setIcon(circleIcon);
+            }
+        }
+        conn.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+public ImageIcon makeCircleImage(String imagePath, int diameter) {
+        try {
+            ImageIcon originalIcon = new ImageIcon(imagePath);
+            java.awt.Image img = originalIcon.getImage();
+
+            BufferedImage bufferedImage = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = bufferedImage.createGraphics();
+
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2.fillOval(0, 0, diameter, diameter);
+            g2.setComposite(AlphaComposite.SrcIn);
+            
+            g2.drawImage(img, 0, 0, diameter, diameter, null);
+            g2.dispose();
+
+            return new ImageIcon(bufferedImage);
+        } catch (Exception e) {
+            System.out.println("Error making circle image: " + e.getMessage());
+            return null;
+        }
+    }
+ // <--- Mao kini ang pinaka-last nga bracket sa class
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -39,7 +110,9 @@ public class AdminProfile extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jLabel9 = new javax.swing.JLabel();
+        lbl_image = new javax.swing.JLabel();
+        btn_browse = new javax.swing.JButton();
+        btn_save = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -56,6 +129,7 @@ public class AdminProfile extends javax.swing.JFrame {
 
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jTextField1.setEditable(false);
         jTextField1.setBackground(new java.awt.Color(153, 0, 0));
         jTextField1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         jTextField1.setForeground(new java.awt.Color(255, 255, 255));
@@ -72,14 +146,18 @@ public class AdminProfile extends javax.swing.JFrame {
         jPanel4.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(19, 11, 160, 43));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel2.setText("Username:");
+        jLabel2.setText("Fullname:");
         jPanel4.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 80, 70, -1));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel3.setText("Fullname:");
-        jPanel4.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 130, 60, -1));
+        jLabel3.setText("Email:");
+        jPanel4.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 130, 60, -1));
         jPanel4.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 140, -1, -1));
+
+        jTextField2.setEditable(false);
         jPanel4.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 80, 170, -1));
+
+        jTextField3.setEditable(false);
         jPanel4.add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 130, 170, -1));
 
         jButton1.setText("Back");
@@ -91,8 +169,25 @@ public class AdminProfile extends javax.swing.JFrame {
         });
         jPanel4.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 200, 90, -1));
 
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/pfp.png"))); // NOI18N
-        jPanel4.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(-60, 50, 260, 170));
+        lbl_image.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbl_image.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/pfp.png"))); // NOI18N
+        jPanel4.add(lbl_image, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 150, 150));
+
+        btn_browse.setText("Change Picture");
+        btn_browse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_browseActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btn_browse, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 220, 120, 30));
+
+        btn_save.setText("Save");
+        btn_save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_saveActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btn_save, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 200, 90, -1));
 
         jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 90, 700, 280));
 
@@ -123,6 +218,7 @@ public class AdminProfile extends javax.swing.JFrame {
 
         jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 130, 500));
 
+        jTextField4.setEditable(false);
         jTextField4.setBackground(new java.awt.Color(153, 0, 0));
         jTextField4.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jTextField4.setForeground(new java.awt.Color(255, 255, 255));
@@ -136,10 +232,58 @@ public class AdminProfile extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-         admindash dashboard = new admindash();
+         admindash dashboard = new admindash(loggedInUser);
          dashboard.setVisible(true);
          this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btn_browseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_browseActionPerformed
+   JFileChooser browseImageFile = new JFileChooser();
+    // Filter para images ra ang makita
+    FileNameExtensionFilter fnef = new FileNameExtensionFilter("IMAGES", "png", "jpg", "jpeg");
+    browseImageFile.addChoosableFileFilter(fnef);
+    
+    int showOpenDialogue = browseImageFile.showOpenDialog(null);
+    
+    if (showOpenDialogue == JFileChooser.APPROVE_OPTION) {
+        File selectedImageFile = browseImageFile.getSelectedFile();
+        String selectedImagePath = selectedImageFile.getAbsolutePath();
+        
+        // --- KINI ANG GI-UPDATE PARA MAHIMONG CIRCLE ---                
+        // Gamita ang makeCircleImage method nga imong gi-add sa ubos
+        // Diameter kay ang width sa lbl_image
+        ImageIcon circleIcon = makeCircleImage(selectedImagePath, lbl_image.getWidth());                
+        lbl_image.setIcon(circleIcon);
+        // ------------------------------------------------
+        
+        // I-save ang path sa usa ka global variable aron magamit sa Save button
+        this.destinationPath = selectedImagePath; 
+    }
+
+    }//GEN-LAST:event_btn_browseActionPerformed
+
+    private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
+        try {
+        my_config.config conf = new my_config.config();
+        Connection conn = conf.connectDB(); // Gamit ang imong connectDB method
+        
+        // SQL Query para ma-update ang Email ug Picture path base sa Fullname
+        String sql = "UPDATE sign_up SET email = ?, profile_picture = ? WHERE full_name = ?";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        
+        pst.setString(1, jTextField3.getText()); // jTextField3 ang imong email field
+        pst.setString(2, destinationPath);       // Ang path sa picture gikan sa browse button
+        pst.setString(3, loggedInUser);          // Ang session variable gikan sa Login
+        
+        pst.executeUpdate();
+        JOptionPane.showMessageDialog(null, "Profile Updated Successfully!");
+        conn.close();
+        
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+    }
+
+    }//GEN-LAST:event_btn_saveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -171,12 +315,15 @@ public class AdminProfile extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminProfile().setVisible(true);
+                new AdminProfile("admin").setVisible(true);
+
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_browse;
+    private javax.swing.JButton btn_save;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -187,7 +334,6 @@ public class AdminProfile extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
@@ -196,5 +342,6 @@ public class AdminProfile extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
+    private javax.swing.JLabel lbl_image;
     // End of variables declaration//GEN-END:variables
 }

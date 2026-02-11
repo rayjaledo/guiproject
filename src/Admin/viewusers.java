@@ -5,6 +5,13 @@
  */
 package Admin;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
 /**
  *
  * @author pc
@@ -44,6 +51,10 @@ public void displayUser() {
         jTextField2 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         user_table = new javax.swing.JTable();
+        txt_search = new javax.swing.JTextField();
+        btn_add = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         btn_back = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -52,22 +63,29 @@ public void displayUser() {
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jTextField1.setEditable(false);
         jTextField1.setBackground(new java.awt.Color(204, 0, 0));
         jTextField1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jTextField1.setForeground(new java.awt.Color(255, 255, 255));
         jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField1.setText("VIEW USERS");
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 630, 50));
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 680, 50));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jTextField2.setEditable(false);
         jTextField2.setBackground(new java.awt.Color(204, 0, 0));
         jTextField2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jTextField2.setForeground(new java.awt.Color(255, 255, 255));
         jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField2.setText("USERS");
-        jPanel2.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 580, 30));
+        jPanel2.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 640, 30));
 
         user_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -79,9 +97,35 @@ public void displayUser() {
         ));
         jScrollPane1.setViewportView(user_table);
 
-        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 560, 200));
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 620, 210));
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 580, 250));
+        txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_searchKeyReleased(evt);
+            }
+        });
+        jPanel2.add(txt_search, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 50, 150, -1));
+
+        btn_add.setText("Add User");
+        btn_add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_addActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btn_add, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
+
+        jButton2.setText("Update");
+        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 50, -1, -1));
+
+        jButton3.setText("Delete");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 50, -1, -1));
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 640, 300));
 
         btn_back.setText("Back");
         btn_back.addActionListener(new java.awt.event.ActionListener() {
@@ -89,25 +133,46 @@ public void displayUser() {
                 btn_backActionPerformed(evt);
             }
         });
-        jPanel1.add(btn_back, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 330, 70, -1));
+        jPanel1.add(btn_back, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 380, 70, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 630, 370));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 680, 410));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_backActionPerformed
-    // 1. Paghimo og instance sa imong Admin Dashboard
-    // Siguraduha nga 'admindash' ang saktong spelling sa imong class
-    admindash admin = new admindash(); 
+    // 1. Paghimo og instance sa Admin Dashboard
+    // Kinahanglan nimo i-pass ang 'loggedInUser' (o kung unsa man ang variable name sa user)
+    // Kung wala kay variable para sa user sa 'viewusers' frame, gamita lang una ang "Admin" 
+    admindash admin = new admindash("Admin"); 
     
     // 2. I-pakita ang dashboard
     admin.setVisible(true); 
     
-    // 3. I-close ang kasamtangan nga 'viewusers' frame
-    this.dispose(); 
-
+    // 3. I-close ang kasamtangan nga frame
+    this.dispose();
     }//GEN-LAST:event_btn_backActionPerformed
+
+    private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addActionPerformed
+      
+
+    }//GEN-LAST:event_btn_addActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
+      DefaultTableModel model = (DefaultTableModel) user_table.getModel();
+    TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>(model);
+    user_table.setRowSorter(trs);
+    trs.setRowFilter(RowFilter.regexFilter(txt_search.getText()));
+
+    }//GEN-LAST:event_txt_searchKeyReleased
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -145,12 +210,16 @@ public void displayUser() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_add;
     private javax.swing.JButton btn_back;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField txt_search;
     private javax.swing.JTable user_table;
     // End of variables declaration//GEN-END:variables
 }

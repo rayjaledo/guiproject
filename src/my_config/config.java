@@ -182,6 +182,10 @@ public class config {
         System.out.println("SQL Error sa Record Session: " + e.getMessage());
     }
 }
+
+    public Object getConnection() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
    
     
 }

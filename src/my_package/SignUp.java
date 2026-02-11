@@ -91,6 +91,7 @@ public class SignUp extends javax.swing.JFrame {
         });
         jPanel1.add(btn_SignUp, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 280, 160, 50));
 
+        jTextField5.setEditable(false);
         jTextField5.setBackground(new java.awt.Color(204, 0, 0));
         jTextField5.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jTextField5.setForeground(new java.awt.Color(255, 255, 255));

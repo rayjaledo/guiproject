@@ -86,6 +86,7 @@ public class Login extends javax.swing.JFrame {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/loginfries_1.png"))); // NOI18N
         panel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 20, -1, -1));
 
+        jTextField1.setEditable(false);
         jTextField1.setBackground(new java.awt.Color(204, 0, 0));
         jTextField1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jTextField1.setForeground(new java.awt.Color(255, 255, 255));
@@ -197,7 +198,7 @@ public class Login extends javax.swing.JFrame {
 
     if (role.equalsIgnoreCase("Admin")) {
         // 2. Siguruha nga husto ang package name 'Admin'
-        Admin.admindash adm = new Admin.admindash();
+        Admin.admindash adm = new Admin.admindash(user);
         adm.setVisible(true);
     } 
     else if (role.equalsIgnoreCase("Staff")) {
