@@ -31,49 +31,59 @@ ResultSet rs = null;
         initComponents();
     this.loggedInUser = user;
     refreshTable();
+    displayProducts();
     }
+    public void displayProducts() {
+    try {
+        java.sql.Connection conn = java.sql.DriverManager.getConnection("jdbc:sqlite:project.db");
+        String sql = "SELECT p_id AS ID, p_name AS 'Product Name', p_category AS Category, p_price AS Price FROM products";
+        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+        java.sql.ResultSet rs = pst.executeQuery();
+        
+        // Gamit ang rs2xml.jar
+        productTable.setModel(net.proteanit.sql.DbUtils.resultSetToTableModel(rs));
+        
+        conn.close();
+    } catch (Exception e) {
+        System.out.println(e.getMessage());
+    }
+}
 
     admindash() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    public void refreshTable() {
-        my_config.config conf = new my_config.config();
-    
-    // 1. I-display ang data gikan sa DB
-    // Siguruha nga ang SQL query husto
-    conf.displayData("SELECT p_id as 'ID', p_name as 'Product Name', p_category as 'Category', p_price as 'Price' FROM products", productTable);
-    
-    // 2. I-ADD PAG-USAB ANG BUTTON COLUMNS (Kini ang kulang!)
-    // Human sa displayData, kinahanglan nato i-insert ang "Edit" ug "Delete" columns sa model
-    DefaultTableModel model = (DefaultTableModel) productTable.getModel();
-    model.addColumn("Edit");
-    model.addColumn("Delete");
+   public void refreshTable() {
+    try {
+        java.sql.Connection conn = java.sql.DriverManager.getConnection("jdbc:sqlite:project.db");
+        String sql = "SELECT p_id as 'ID', p_name as 'Product Name', p_category as 'Category', p_price as 'Price' FROM products";
+        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+        java.sql.ResultSet rs = pst.executeQuery();
 
-    // 3. I-apply ang renderers ug editors
-    // Siguruha nga ang text "Edit" ug "Delete" match sa imong column names sa taas
-    productTable.getColumn("Edit").setCellRenderer(new ButtonRenderer("Edit"));
-    productTable.getColumn("Delete").setCellRenderer(new ButtonRenderer("Delete"));
+        // 1. I-load ang database data (Kini ang mo-reset sa table)
+        productTable.setModel(net.proteanit.sql.DbUtils.resultSetToTableModel(rs));
 
-    productTable.getColumn("Edit").setCellEditor(new ButtonEditor(productTable, "Edit"));
-    productTable.getColumn("Delete").setCellEditor(new ButtonEditor(productTable, "Delete"));
-// Add sample data
+        // 2. I-add pag-usab ang columns para sa buttons
+        DefaultTableModel model = (DefaultTableModel) productTable.getModel();
+        model.addColumn("Update");
+        model.addColumn("Delete");
 
+        // 3. I-BUTANG PAG-USAB ANG TEXT SA MATAG ROW (Importante!)
+        for (int i = 0; i < productTable.getRowCount(); i++) {
+            productTable.setValueAt("Update", i, 4); // Column index 4
+            productTable.setValueAt("Delete", i, 5); // Column index 5
+        }
 
-model.addRow(new Object[]{
-    1, "Cheeseburger", "Burgers", "₱75", "Edit", "Delete"
-});
+        // 4. I-reapply ang Renderers ug Editors
+        productTable.getColumn("Update").setCellRenderer(new my_package.ButtonRenderer("Update"));
+        productTable.getColumn("Delete").setCellRenderer(new my_package.ButtonRenderer("Delete"));
+        productTable.getColumn("Update").setCellEditor(new my_package.ButtonEditor(productTable, "Update"));
+        productTable.getColumn("Delete").setCellEditor(new my_package.ButtonEditor(productTable, "Delete"));
 
-model.addRow(new Object[]{
-    2, "French Fries", "Sides", "₱50", "Edit", "Delete"
-});
-model.addRow(new Object[]{
-    2, "Sphagetti", "Sides", "₱100", "Edit", "Delete"
-});
-
-       
-
-
+        conn.close();
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
     }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -183,6 +193,11 @@ model.addRow(new Object[]{
         AddProduct.setForeground(new java.awt.Color(255, 255, 255));
         AddProduct.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         AddProduct.setText("Add Product");
+        AddProduct.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AddProductMouseClicked(evt);
+            }
+        });
         AddProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 AddProductActionPerformed(evt);
@@ -238,17 +253,9 @@ model.addRow(new Object[]{
 
             },
             new String [] {
-                "ID", "Product Name", "Category", "Price", "Edit", "Delete"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
-            };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
             }
-        });
+        ));
         productTable.setRowHeight(40);
         jScrollPane1.setViewportView(productTable);
 
@@ -301,6 +308,22 @@ model.addRow(new Object[]{
     profile.setVisible(true);
     this.dispose();
     }//GEN-LAST:event_jLabel7MouseClicked
+
+    private void AddProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddProductMouseClicked
+        // 1. Paghimo og instance sa imong JDialog
+    // Siguruha nga "addproduct" ang saktong spelling sa imong JDialog class
+    addproduct add = new addproduct(this, true); 
+    
+    // 2. I-center ang dialog sa tunga sa dashboard
+    add.setLocationRelativeTo(this);
+    
+    // 3. I-pakita ang dialog
+    add.setVisible(true);
+    
+    // 4. Human og close sa dialog, i-refresh ang table para makita ang bag-ong data
+    refreshTable(); 
+
+    }//GEN-LAST:event_AddProductMouseClicked
 
     /**
      * @param args the command line arguments

@@ -10,7 +10,7 @@ package Admin;
  * @author USER41
  */
 public class adduser extends javax.swing.JDialog {
-
+public String userID;
     /**
      * Creates new form adduser
      */
@@ -28,21 +28,184 @@ public class adduser extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        Fullname = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtFullName = new javax.swing.JTextField();
+        txtEmail = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        cmbType = new javax.swing.JComboBox<>();
+        cmbStatus = new javax.swing.JComboBox<>();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("User Details");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 60, -1, -1));
+
+        Fullname.setText("Fullname");
+        jPanel1.add(Fullname, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 150, -1, -1));
+
+        jLabel3.setText("Email");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 200, -1, -1));
+
+        jLabel4.setText("Password");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 250, -1, -1));
+
+        jLabel5.setText("User Type");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 300, -1, -1));
+
+        jLabel6.setText("User Status");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 350, -1, -1));
+
+        txtFullName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFullNameActionPerformed(evt);
+            }
+        });
+        jPanel1.add(txtFullName, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 150, 170, -1));
+        jPanel1.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 200, 170, -1));
+        jPanel1.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 250, 170, -1));
+
+        jButton1.setText("Back");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 470, 110, -1));
+
+        jButton2.setText("Add User");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 430, 100, -1));
+
+        cmbType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin", "Staff", "Customer", " " }));
+        jPanel1.add(cmbType, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 300, 170, -1));
+
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Active", "Inactive", " ", " " }));
+        jPanel1.add(cmbStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 350, 170, -1));
+
+        jButton4.setText("Delete");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 470, 100, -1));
+
+        jButton5.setText("Save");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 430, 110, -1));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 40, 450, 590));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtFullNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFullNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFullNameActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+                                          
+   // I-clear ang mga fields aron andam na para sa bag-ong user
+    txtFullName.setText("");
+    txtEmail.setText("");
+    txtPassword.setText("");
+    cmbType.setSelectedIndex(0);
+    cmbStatus.setSelectedIndex(0);
+    
+    // Importante: I-reset ang userID sa null para mahibalo ang Save button nga NEW user kini
+    userID = null; 
+    
+    javax.swing.JOptionPane.showMessageDialog(null, "Form cleared. You can now enter new user details.");
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+       int res = javax.swing.JOptionPane.showConfirmDialog(null, "Sure ka i-delete ni?", "Warning", javax.swing.JOptionPane.YES_NO_OPTION);
+    if (res == 0) {
+        try {
+            java.sql.Connection conn = java.sql.DriverManager.getConnection("jdbc:sqlite:project.db");
+            String sql = "DELETE FROM sign_up WHERE u_id = ?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, userID);
+            pst.executeUpdate();
+            javax.swing.JOptionPane.showMessageDialog(null, "Successfully Deleted!");
+            this.dispose();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+       // 1. Validation: I-check kon naay sulod ang Fullname ug Email
+    if (txtFullName.getText().trim().isEmpty() || txtEmail.getText().trim().isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(null, "Please fill in the required fields!");
+        return; // Dili mopadayon kon walay sulod
+    }
+
+    try {
+        java.sql.Connection conn = java.sql.DriverManager.getConnection("jdbc:sqlite:project.db");
+        
+        if (userID == null) {
+            // INSERT LOGIC (New User)
+            String sql = "INSERT INTO sign_up (full_name, email, password, u_type, u_status) VALUES (?, ?, ?, ?, ?)";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, txtFullName.getText());
+            pst.setString(2, txtEmail.getText());
+            pst.setString(3, hashPassword(txtPassword.getText())); // Secure hashing
+            pst.setString(4, cmbType.getSelectedItem().toString());
+            pst.setString(5, cmbStatus.getSelectedItem().toString());
+            pst.executeUpdate();
+            javax.swing.JOptionPane.showMessageDialog(null, "Successfully Added New User!");
+        } else {
+            // UPDATE LOGIC (Existing User)
+            String sql = "UPDATE sign_up SET full_name=?, email=?, u_type=?, u_status=? WHERE u_id=?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, txtFullName.getText());
+            pst.setString(2, txtEmail.getText());
+            pst.setString(3, cmbType.getSelectedItem().toString());
+            pst.setString(4, cmbStatus.getSelectedItem().toString());
+            pst.setString(5, userID);
+            pst.executeUpdate();
+            javax.swing.JOptionPane.showMessageDialog(null, "Successfully Updated Changes!");
+        }
+        
+        conn.close();
+        this.dispose(); // I-close ang form human og save
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+    }
+
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -85,7 +248,39 @@ public class adduser extends javax.swing.JDialog {
             }
         });
     }
+        public String hashPassword(String password) {
+    try {
+        java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+        byte[] hash = md.digest(password.getBytes("UTF-8"));
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    } catch (Exception ex) {
+        throw new RuntimeException(ex);
+    }
+
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Fullname;
+    public javax.swing.JComboBox<String> cmbStatus;
+    public javax.swing.JComboBox<String> cmbType;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
+    public javax.swing.JTextField txtEmail;
+    public javax.swing.JTextField txtFullName;
+    public javax.swing.JTextField txtPassword;
     // End of variables declaration//GEN-END:variables
 }

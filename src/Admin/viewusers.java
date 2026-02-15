@@ -6,24 +6,74 @@
 package Admin;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import Admin.adduser;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author pc
  */
 public class viewusers extends javax.swing.JFrame {
+    public void displayData() {
+    try {
+        // Siguruha nga husto ang ngalan sa imong database file
+        java.sql.Connection conn = java.sql.DriverManager.getConnection("jdbc:sqlite:project.db");
+        String sql = "SELECT u_id, full_name, email, u_type, u_status FROM sign_up";
+        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+        java.sql.ResultSet rs = pst.executeQuery();
+        
+        // Gamit ang DbUtils para automatic ma-fill ang jTable
+        user_table.setModel(net.proteanit.sql.DbUtils.resultSetToTableModel(rs));
+        
+        conn.close();
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(null, "Refresh Error: " + e.getMessage());
+    }
+}
 
     /**
      * Creates new form viewusers
      */
     public viewusers() {
         initComponents();
+        txt_search.setText("Search...");
+        txt_search.setForeground(new java.awt.Color(153, 153, 153));
         displayUser();
+        
+    }
+    public void loadUsers() {
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:project.db");
+
+            String sql = "SELECT u_id, full_name, email, u_type, u_status FROM sign_up";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+
+            DefaultTableModel model = (DefaultTableModel) user_table.getModel();
+            model.setRowCount(0);
+
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getInt("u_id"),
+                    rs.getString("full_name"),
+                    rs.getString("email"),
+                    rs.getString("u_type"),
+                    rs.getString("u_status")
+                });
+            }
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     // I-paste kini sa sulod sa public class viewusers
 public void displayUser() {
@@ -52,9 +102,7 @@ public void displayUser() {
         jScrollPane1 = new javax.swing.JScrollPane();
         user_table = new javax.swing.JTable();
         txt_search = new javax.swing.JTextField();
-        btn_add = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         btn_back = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -95,35 +143,34 @@ public void displayUser() {
 
             }
         ));
+        user_table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                user_tableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(user_table);
 
         jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 620, 210));
 
+        txt_search.setForeground(new java.awt.Color(51, 51, 51));
+        txt_search.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txt_searchFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txt_searchFocusLost(evt);
+            }
+        });
         txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txt_searchKeyReleased(evt);
             }
         });
-        jPanel2.add(txt_search, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 50, 150, -1));
+        jPanel2.add(txt_search, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 40, 150, -1));
 
-        btn_add.setText("Add User");
-        btn_add.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_addActionPerformed(evt);
-            }
-        });
-        jPanel2.add(btn_add, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
-
-        jButton2.setText("Update");
-        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 50, -1, -1));
-
-        jButton3.setText("Delete");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 50, -1, -1));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Search");
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 40, 60, 30));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 640, 300));
 
@@ -133,7 +180,7 @@ public void displayUser() {
                 btn_backActionPerformed(evt);
             }
         });
-        jPanel1.add(btn_back, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 380, 70, -1));
+        jPanel1.add(btn_back, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 380, 70, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 680, 410));
 
@@ -153,26 +200,61 @@ public void displayUser() {
     this.dispose();
     }//GEN-LAST:event_btn_backActionPerformed
 
-    private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addActionPerformed
-      
-
-    }//GEN-LAST:event_btn_addActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
-
     private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
-      DefaultTableModel model = (DefaultTableModel) user_table.getModel();
-    TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>(model);
-    user_table.setRowSorter(trs);
-    trs.setRowFilter(RowFilter.regexFilter(txt_search.getText()));
+   String query = txt_search.getText();                
+    
+    // Kon walay gi-type o ang placeholder ra ang naa, ayaw i-filter
+    if (query.equals("Search...") || query.isEmpty()) {
+        user_table.setRowSorter(null); // Ipakita tanan
+    } else {
+        // Kon nag-type na ang user (nga itom ang color), i-filter na ang table
+        DefaultTableModel model = (DefaultTableModel) user_table.getModel();
+        TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>(model);
+        user_table.setRowSorter(trs);                
+        trs.setRowFilter(RowFilter.regexFilter("(?i)" + query));
+    }
 
     }//GEN-LAST:event_txt_searchKeyReleased
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void user_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_user_tableMouseClicked
+     int row = user_table.getSelectedRow();
+    TableModel model = user_table.getModel();
+    
+    // Pag-abli sa adduser form
+    adduser addForm = new adduser(new javax.swing.JFrame(), true);
+    
+    // I-pass ang ID para mahibal-an kinsa ang i-update o delete
+    addForm.userID = model.getValueAt(row, 0).toString();
+    
+    // I-fill ang mga fields sa data gikan sa table
+    addForm.txtFullName.setText(model.getValueAt(row, 1).toString());
+    addForm.txtEmail.setText(model.getValueAt(row, 2).toString());
+    addForm.cmbType.setSelectedItem(model.getValueAt(row, 3).toString());
+    addForm.cmbStatus.setSelectedItem(model.getValueAt(row, 4).toString());
+    
+    addForm.setVisible(true);
+    displayData();
+
+    }//GEN-LAST:event_user_tableMouseClicked
+
+    private void txt_searchFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_searchFocusGained
+      if(txt_search.getText().equals("Search...")){
+        txt_search.setText(""); // Ma-clear ang "Search..."
+        txt_search.setForeground(new java.awt.Color(0,0,0)); // Mahimong itom
+    }
+
+    }//GEN-LAST:event_txt_searchFocusGained
+
+    private void txt_searchFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_searchFocusLost
+      if(txt_search.getText().isEmpty()){
+        txt_search.setText("Search..."); // Mobalik ang "Search..."
+        txt_search.setForeground(new java.awt.Color(153,153,153)); // Balik sa gray
+    }
+    }//GEN-LAST:event_txt_searchFocusLost
 
     /**
      * @param args the command line arguments
@@ -210,10 +292,8 @@ public void displayUser() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_add;
     private javax.swing.JButton btn_back;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

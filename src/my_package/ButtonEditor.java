@@ -29,19 +29,24 @@ public class ButtonEditor extends DefaultCellEditor {
             String id = table.getValueAt(row, 0).toString();
             my_config.config conf = new my_config.config();
 
-            if (action.equals("Delete")) {
-                int confirm = JOptionPane.showConfirmDialog(null, 
-                    "Are you sure you want to delete ID: " + id + "?", "Delete", JOptionPane.YES_NO_OPTION);
-                
-                if (confirm == JOptionPane.YES_OPTION) {
-                    // SQL para ma-delete sa database
-                    String sql = "DELETE FROM products WHERE p_id = '" + id + "'";
-                    conf.updateData(sql); // Gamiton ang updateData method
-                    
-                    ((DefaultTableModel) table.getModel()).removeRow(row);
-                    JOptionPane.showMessageDialog(null, "Product Deleted Successfully");
-                }
-            }
+            // Imbes nga "Edit", gamita ang "Update" kay mao ni ang text sa imong button
+if (action.equals("Update")) { 
+    // Kuhaon ang data gikan sa table cells
+    String name = table.getValueAt(row, 1).toString();
+    String category = table.getValueAt(row, 2).toString();
+    String price = table.getValueAt(row, 3).toString();
+
+    // SQL Query para ma-save ang changes
+    String sql = "UPDATE products SET p_name = '" + name + "', "
+               + "p_category = '" + category + "', "
+               + "p_price = '" + price + "' "
+               + "WHERE p_id = '" + id + "'";
+
+    int result = conf.updateData(sql);
+    if(result > 0) {
+        JOptionPane.showMessageDialog(null, "Product ID " + id + " updated successfully!");
+    }
+}
 
             if (action.equals("Edit")) {
                 // Kuhaon ang bag-ong data gikan sa table cells
