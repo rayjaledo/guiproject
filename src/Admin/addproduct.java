@@ -5,12 +5,22 @@
  */
 package Admin;
 
+import java.awt.Image;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author james
  */
 public class addproduct extends javax.swing.JDialog {
-
+    String imagePath = "";
+    
     /**
      * Creates new form addproduct
      */
@@ -29,12 +39,14 @@ public class addproduct extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        lbl_preview = new javax.swing.JLabel();
+        btnBrowse = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtPName = new javax.swing.JTextField();
-        txtPPrice = new javax.swing.JTextField();
-        cmbPCategory = new javax.swing.JComboBox<>();
+        txtName = new javax.swing.JTextField();
+        txtPrice = new javax.swing.JTextField();
+        comboCategory = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -44,30 +56,40 @@ public class addproduct extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel1.add(lbl_preview, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 260, 50, 40));
 
-        jLabel1.setText("Name");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 140, -1, -1));
-
-        jLabel2.setText("Price");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 200, -1, -1));
-
-        jLabel3.setText("Category");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 250, -1, -1));
-        jPanel1.add(txtPName, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, 130, -1));
-        jPanel1.add(txtPPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 200, 130, -1));
-
-        cmbPCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Burgers", "Chicken", "Fries & Sides", "Drinks", "Desserts" }));
-        cmbPCategory.addActionListener(new java.awt.event.ActionListener() {
+        btnBrowse.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        btnBrowse.setText("Browse Image");
+        btnBrowse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbPCategoryActionPerformed(evt);
+                btnBrowseActionPerformed(evt);
             }
         });
-        jPanel1.add(cmbPCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 250, 130, -1));
+        jPanel1.add(btnBrowse, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 270, 130, -1));
+
+        jLabel1.setText("Name");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, -1, -1));
+
+        jLabel2.setText("Price");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 180, -1, -1));
+
+        jLabel3.setText("Category");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 220, -1, -1));
+        jPanel1.add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 140, 130, -1));
+        jPanel1.add(txtPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 180, 130, -1));
+
+        comboCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Burgers", "Chicken", "Fries & Sides", "Drinks", "Desserts" }));
+        comboCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboCategoryActionPerformed(evt);
+            }
+        });
+        jPanel1.add(comboCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 220, 130, -1));
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("ADD PRODUCT");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 50, 140, -1));
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 60, 140, -1));
 
         jButton1.setText("Save");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -75,38 +97,80 @@ public class addproduct extends javax.swing.JDialog {
                 jButton1ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 360, 80, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 370, 80, -1));
 
         jButton2.setText("Back");
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 360, 80, -1));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 370, 80, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, 320, 450));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, 460, 530));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cmbPCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbPCategoryActionPerformed
+    private void comboCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboCategoryActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cmbPCategoryActionPerformed
+    }//GEN-LAST:event_comboCategoryActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-    java.sql.Connection conn = java.sql.DriverManager.getConnection("jdbc:sqlite:project.db");
-    String sql = "INSERT INTO products (p_name, p_category, p_price) VALUES (?, ?, ?)";
-    java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-    
-    pst.setString(1, txtPName.getText());
-    pst.setString(2, cmbPCategory.getSelectedItem().toString());
-    pst.setString(3, txtPPrice.getText());
-    
-    pst.executeUpdate();
-    javax.swing.JOptionPane.showMessageDialog(null, "Product Saved!");
-    conn.close();
-    this.dispose(); 
-} catch (Exception e) {
-    System.out.println(e.getMessage());
-}
+  try {
+        // 1. Connection sa database
+        Connection conn = DriverManager.getConnection("jdbc:sqlite:project.db");
+        
+        // 2. SQL Insert query
+        String sql = "INSERT INTO products (p_name, p_price, p_category, p_image) VALUES (?, ?, ?, ?)";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        
+        // 3. Pag-set sa mga values
+        pst.setString(1, txtName.getText());
+        pst.setDouble(2, Double.parseDouble(txtPrice.getText()));                
+        pst.setString(3, comboCategory.getSelectedItem().toString());                
+        pst.setString(4, imagePath); // Siguruha nga imagePath ang gamiton diri
+        
+        // 4. Execute
+        pst.executeUpdate();
+        JOptionPane.showMessageDialog(null, "Product Added Successfully!");
+        
+        // I-clear ang fields
+        txtName.setText("");
+        txtPrice.setText("");
+        lbl_preview.setIcon(null);
+        imagePath = ""; 
+        
+        conn.close();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+    }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowseActionPerformed
+       JFileChooser file = new JFileChooser();
+    int result = file.showOpenDialog(null);
+    
+    if (result == JFileChooser.APPROVE_OPTION) {
+        File selectedFile = file.getSelectedFile();
+        imagePath = selectedFile.getAbsolutePath(); // Siguruha nga imagePath ang variable name
+        
+        // 1. Paghimo og ImageIcon gikan sa napili nga file
+        ImageIcon MyImage = new ImageIcon(imagePath);
+        
+        // 2. I-resize ang image base sa gidak-on sa imong lbl_preview
+        Image img = MyImage.getImage();
+        Image newImg = img.getScaledInstance(lbl_preview.getWidth(), lbl_preview.getHeight(), Image.SCALE_SMOOTH);
+        
+        // 3. I-set ang bag-ong resize nga image sa label
+        ImageIcon image = new ImageIcon(newImg);
+        lbl_preview.setIcon(image);
+    }
+    }//GEN-LAST:event_btnBrowseActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -151,7 +215,8 @@ public class addproduct extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> cmbPCategory;
+    private javax.swing.JButton btnBrowse;
+    private javax.swing.JComboBox<String> comboCategory;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -159,7 +224,8 @@ public class addproduct extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtPName;
-    private javax.swing.JTextField txtPPrice;
+    private javax.swing.JLabel lbl_preview;
+    private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtPrice;
     // End of variables declaration//GEN-END:variables
 }

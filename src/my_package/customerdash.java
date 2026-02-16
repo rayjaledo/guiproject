@@ -5,6 +5,12 @@
  */
 package my_package;
 
+import java.awt.Image;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.ImageIcon;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
@@ -23,7 +29,43 @@ public class customerdash extends javax.swing.JFrame {
     jTable1.getColumnModel().getColumn(1).setCellRenderer(centerRenderer); // Para sa Qty
     jTable1.getColumnModel().getColumn(2).setCellRenderer(centerRenderer); // Para sa Price
     }
+public void loadProducts() {
+    try {
+        // 1. Connection sa Database
+        Connection conn = DriverManager.getConnection("jdbc:sqlite:project.db");
+        String sql = "SELECT p_name, p_price, p_image FROM products";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
 
+        // Maghimo kita og array sa imong mga labels para sayon i-loop
+        javax.swing.JLabel[] imgLabels = {lbl_img1, lbl_img2, lbl_img3, lbl_img4, lbl_img5, lbl_img6};
+        javax.swing.JLabel[] nameLabels = {lbl_name1, lbl_name2, lbl_name3, lbl_name4, lbl_name5, lbl_name6};
+        javax.swing.JLabel[] priceLabels = {lbl_price1, lbl_price2, lbl_price3, lbl_price4, lbl_price5, lbl_price6};
+
+        int i = 0;
+        while (rs.next() && i < imgLabels.length) {
+            // Kuhaon ang data gikan sa DB
+            String name = rs.getString("p_name");
+            String price = rs.getString("p_price");
+            String path = rs.getString("p_image"); // Ang address sa picture
+
+            // I-set ang text
+            nameLabels[i].setText(name);
+            priceLabels[i].setText("₱ " + price);
+
+            // I-load ug i-resize ang image
+            if (path != null && !path.isEmpty()) {
+                ImageIcon icon = new ImageIcon(path);
+                Image img = icon.getImage().getScaledInstance(imgLabels[i].getWidth(), imgLabels[i].getHeight(), Image.SCALE_SMOOTH);
+                imgLabels[i].setIcon(new ImageIcon(img));
+            }
+            i++;
+        }
+        conn.close();
+    } catch (Exception e) {
+        System.out.println("Error loading products: " + e.getMessage());
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,35 +79,35 @@ public class customerdash extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        lbl_name1 = new javax.swing.JLabel();
+        lbl_img1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
+        lbl_price1 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        lbl_img2 = new javax.swing.JLabel();
+        lbl_name2 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
-        jLabel13 = new javax.swing.JLabel();
+        lbl_price2 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
+        lbl_img3 = new javax.swing.JLabel();
+        lbl_name3 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
-        jLabel15 = new javax.swing.JLabel();
+        lbl_price3 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        lbl_name4 = new javax.swing.JLabel();
+        lbl_img4 = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
-        jLabel17 = new javax.swing.JLabel();
+        lbl_price4 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
+        lbl_img5 = new javax.swing.JLabel();
+        lbl_name5 = new javax.swing.JLabel();
         jButton6 = new javax.swing.JButton();
-        jLabel19 = new javax.swing.JLabel();
+        lbl_price5 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
-        jLabel20 = new javax.swing.JLabel();
-        jLabel21 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        lbl_name6 = new javax.swing.JLabel();
+        lbl_price6 = new javax.swing.JLabel();
+        lbl_img6 = new javax.swing.JLabel();
         jButton7 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
@@ -104,121 +146,126 @@ public class customerdash extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel9.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setText("Cheeseburger");
-        jPanel3.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 90, 20));
+        lbl_name1.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        lbl_name1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbl_name1.setText("Cheeseburger");
+        jPanel3.add(lbl_name1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 90, 20));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cburger.png"))); // NOI18N
-        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 60));
+        lbl_img1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cburger.png"))); // NOI18N
+        jPanel3.add(lbl_img1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 60));
 
         jButton2.setBackground(new java.awt.Color(255, 153, 51));
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Add to Cart");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
         jPanel3.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 90, 30));
         jPanel3.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, -1, 20));
 
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("₱ 75");
-        jPanel3.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 54, 30, 30));
+        lbl_price1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbl_price1.setText("₱ 75");
+        jPanel3.add(lbl_price1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 54, 30, 30));
 
         jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 110, 120));
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/ccn.png"))); // NOI18N
-        jPanel4.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, 40));
+        lbl_img2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/ccn.png"))); // NOI18N
+        jPanel4.add(lbl_img2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, 40));
 
-        jLabel12.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel12.setText("Chiken Nuggets");
-        jPanel4.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 100, 20));
+        lbl_name2.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        lbl_name2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbl_name2.setText("Chiken Nuggets");
+        jPanel4.add(lbl_name2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 100, 20));
 
         jButton3.setBackground(new java.awt.Color(255, 153, 51));
         jButton3.setForeground(new java.awt.Color(255, 255, 255));
         jButton3.setText("Add to Cart");
         jPanel4.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 100, 30));
 
-        jLabel13.setText("₱ 99");
-        jPanel4.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 60, -1, -1));
+        lbl_price2.setText("₱ 99");
+        jPanel4.add(lbl_price2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 60, -1, -1));
 
         jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 10, 120, 120));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/ccola.png"))); // NOI18N
-        jPanel5.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 80, 50));
+        lbl_img3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/ccola.png"))); // NOI18N
+        jPanel5.add(lbl_img3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 80, 50));
 
-        jLabel14.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        jLabel14.setText("Cola");
-        jPanel5.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 30, 10));
+        lbl_name3.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        lbl_name3.setText("Cola");
+        jPanel5.add(lbl_name3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 30, 10));
 
         jButton4.setBackground(new java.awt.Color(255, 153, 51));
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Add to Cart");
         jPanel5.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 100, 30));
 
-        jLabel15.setText("₱ 35");
-        jPanel5.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 64, 30, 10));
+        lbl_price3.setText("₱ 35");
+        jPanel5.add(lbl_price3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 64, 30, 10));
 
         jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 10, 120, 120));
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel16.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        jLabel16.setText("French Fries");
-        jPanel6.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 70, -1));
+        lbl_name4.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        lbl_name4.setText("French Fries");
+        jPanel6.add(lbl_name4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 70, -1));
 
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cfries.png"))); // NOI18N
-        jPanel6.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 90, 50));
+        lbl_img4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cfries.png"))); // NOI18N
+        jPanel6.add(lbl_img4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 90, 50));
 
         jButton5.setBackground(new java.awt.Color(255, 153, 51));
         jButton5.setForeground(new java.awt.Color(255, 255, 255));
         jButton5.setText("Add to Cart");
         jPanel6.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 90, 30));
 
-        jLabel17.setText("₱ 50");
-        jPanel6.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 50, 20));
+        lbl_price4.setText("₱ 50");
+        jPanel6.add(lbl_price4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 50, 20));
 
         jPanel2.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 110, 120));
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cfc.png"))); // NOI18N
-        jPanel7.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, 50));
+        lbl_img5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cfc.png"))); // NOI18N
+        jPanel7.add(lbl_img5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, 50));
 
-        jLabel18.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel18.setText("Fried Chiken");
-        jPanel7.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 80, 10));
+        lbl_name5.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        lbl_name5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbl_name5.setText("Fried Chiken");
+        jPanel7.add(lbl_name5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 80, 10));
 
         jButton6.setBackground(new java.awt.Color(255, 153, 51));
         jButton6.setForeground(new java.awt.Color(255, 255, 255));
         jButton6.setText("Add to Cart");
         jPanel7.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 100, 30));
 
-        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel19.setText("₱ 109");
-        jPanel7.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 30, 20));
+        lbl_price5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbl_price5.setText("₱ 109");
+        jPanel7.add(lbl_price5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 30, 20));
 
         jPanel2.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 150, 120, 120));
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
         jPanel8.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel20.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        jLabel20.setText("Ice Cream Sundae");
-        jPanel8.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 100, 20));
+        lbl_name6.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        lbl_name6.setText("Ice Cream Sundae");
+        jPanel8.add(lbl_name6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 100, 20));
 
-        jLabel21.setText("₱ 55");
-        jPanel8.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 60, 30, 20));
+        lbl_price6.setText("₱ 55");
+        jPanel8.add(lbl_price6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 60, 30, 20));
 
-        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cics.png"))); // NOI18N
-        jPanel8.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, 80));
+        lbl_img6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cics.png"))); // NOI18N
+        jPanel8.add(lbl_img6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, 80));
 
         jButton7.setBackground(new java.awt.Color(255, 153, 51));
         jButton7.setForeground(new java.awt.Color(255, 255, 255));
@@ -320,6 +367,10 @@ public class customerdash extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        
+    }//GEN-LAST:event_jButton2MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -365,25 +416,7 @@ public class customerdash extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -405,5 +438,23 @@ public class customerdash extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JLabel lbl_img1;
+    private javax.swing.JLabel lbl_img2;
+    private javax.swing.JLabel lbl_img3;
+    private javax.swing.JLabel lbl_img4;
+    private javax.swing.JLabel lbl_img5;
+    private javax.swing.JLabel lbl_img6;
+    private javax.swing.JLabel lbl_name1;
+    private javax.swing.JLabel lbl_name2;
+    private javax.swing.JLabel lbl_name3;
+    private javax.swing.JLabel lbl_name4;
+    private javax.swing.JLabel lbl_name5;
+    private javax.swing.JLabel lbl_name6;
+    private javax.swing.JLabel lbl_price1;
+    private javax.swing.JLabel lbl_price2;
+    private javax.swing.JLabel lbl_price3;
+    private javax.swing.JLabel lbl_price4;
+    private javax.swing.JLabel lbl_price5;
+    private javax.swing.JLabel lbl_price6;
     // End of variables declaration//GEN-END:variables
 }
