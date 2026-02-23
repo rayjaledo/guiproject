@@ -33,6 +33,10 @@ public class AdminProfile extends javax.swing.JFrame {
     private String loggedInUser;
     private String destinationPath;
     public AdminProfile(String user) {
+        new my_config.config().checkSession(this);
+        if (!this.isDisplayable()) {
+        return; // Hunongon ang constructor dinhi kon wala naka-login
+    }
         initComponents();
         this.loggedInUser = user;
         loadUserData();

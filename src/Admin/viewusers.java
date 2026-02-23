@@ -42,6 +42,10 @@ public class viewusers extends javax.swing.JFrame {
      * Creates new form viewusers
      */
     public viewusers() {
+        new my_config.config().checkSession(this);
+        if (!this.isDisplayable()) {
+        return; // Hunongon ang constructor dinhi kon wala naka-login
+    }
         initComponents();
         txt_search.setText("Search...");
         txt_search.setForeground(new java.awt.Color(153, 153, 153));
@@ -161,6 +165,11 @@ public void displayUser() {
                 txt_searchFocusLost(evt);
             }
         });
+        txt_search.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_searchActionPerformed(evt);
+            }
+        });
         txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txt_searchKeyReleased(evt);
@@ -255,6 +264,10 @@ public void displayUser() {
         txt_search.setForeground(new java.awt.Color(153,153,153)); // Balik sa gray
     }
     }//GEN-LAST:event_txt_searchFocusLost
+
+    private void txt_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_searchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_searchActionPerformed
 
     /**
      * @param args the command line arguments

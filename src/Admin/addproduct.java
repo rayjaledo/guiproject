@@ -26,6 +26,10 @@ public class addproduct extends javax.swing.JDialog {
      */
     public addproduct(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        new my_config.config().checkSession(this);
+        if (!this.isDisplayable()) {
+        return; // Hunongon ang constructor dinhi kon wala naka-login
+    }
         initComponents();
     }
 
@@ -56,7 +60,7 @@ public class addproduct extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        jPanel1.add(lbl_preview, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 260, 50, 40));
+        jPanel1.add(lbl_preview, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 270, 70, 70));
 
         btnBrowse.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnBrowse.setText("Browse Image");
@@ -107,7 +111,7 @@ public class addproduct extends javax.swing.JDialog {
         });
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 370, 80, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, 460, 530));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 30, 460, 530));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -117,21 +121,30 @@ public class addproduct extends javax.swing.JDialog {
     }//GEN-LAST:event_comboCategoryActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-  try {
-        // 1. Connection sa database
+ // I-check kon blangko ba ang fields
+    if(txtName.getText().isEmpty() || txtPrice.getText().isEmpty() || imagePath.equals("")){
+        JOptionPane.showMessageDialog(null, "Palihug puy-i ang tanang fields ug pilia ang hulagway!");
+        return;
+    }
+
+    try {
         Connection conn = DriverManager.getConnection("jdbc:sqlite:project.db");
-        
-        // 2. SQL Insert query
         String sql = "INSERT INTO products (p_name, p_price, p_category, p_image) VALUES (?, ?, ?, ?)";
         PreparedStatement pst = conn.prepareStatement(sql);
         
-        // 3. Pag-set sa mga values
         pst.setString(1, txtName.getText());
-        pst.setDouble(2, Double.parseDouble(txtPrice.getText()));                
-        pst.setString(3, comboCategory.getSelectedItem().toString());                
-        pst.setString(4, imagePath); // Siguruha nga imagePath ang gamiton diri
         
-        // 4. Execute
+        // Safety check para sa presyo
+        try {
+            pst.setDouble(2, Double.parseDouble(txtPrice.getText()));
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Ang presyo kinahanglan numero lamang!");
+            return;
+        }
+        
+        pst.setString(3, comboCategory.getSelectedItem().toString());
+        pst.setString(4, imagePath);
+        
         pst.executeUpdate();
         JOptionPane.showMessageDialog(null, "Product Added Successfully!");
         
@@ -141,10 +154,12 @@ public class addproduct extends javax.swing.JDialog {
         lbl_preview.setIcon(null);
         imagePath = ""; 
         
+        pst.close(); // I-close ang statement
         conn.close();
     } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
     }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowseActionPerformed

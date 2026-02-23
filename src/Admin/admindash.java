@@ -28,6 +28,10 @@ ResultSet rs = null;
      * Creates new form admindash
      */
     public admindash(String user) {
+        new my_config.config().checkSession(this);
+        if (!this.isDisplayable()) {
+        return; // Hunongon ang constructor dinhi kon wala naka-login
+    }
         initComponents();
     this.loggedInUser = user;
     refreshTable();
@@ -227,6 +231,16 @@ ResultSet rs = null;
         jTextField6.setForeground(new java.awt.Color(255, 255, 255));
         jTextField6.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField6.setText("View Orders");
+        jTextField6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextField6MouseClicked(evt);
+            }
+        });
+        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField6ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 70, 110, 30));
 
         viewusers.setEditable(false);
@@ -324,6 +338,16 @@ ResultSet rs = null;
     refreshTable(); 
 
     }//GEN-LAST:event_AddProductMouseClicked
+
+    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
+        // I-refresh ang data inig abli
+    }//GEN-LAST:event_jTextField6ActionPerformed
+
+    private void jTextField6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField6MouseClicked
+        vieworders vo = new vieworders();
+        vo.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jTextField6MouseClicked
 
     /**
      * @param args the command line arguments

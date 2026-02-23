@@ -9,7 +9,7 @@ import java.sql.Statement; // Gikinahanglan para sa Statement stmt
 import javax.swing.JOptionPane; // Para sa pop-up messages
 import javax.swing.JTable; // Para makaila ang Java sa imong table
 import net.proteanit.sql.DbUtils; // Para sa resultSetToTableModel
-
+import my_package.Login;
 /**
  *
  * @author USER41
@@ -187,5 +187,22 @@ public class config {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
    
-    
+    // Sa sulod sa imong config class
+// Sa sulod sa imong config.java
+// Sa sulod sa imong my_config.config class
+   public void checkSession(java.awt.Window currentFrame) {
+    // 1. Kon ang frame kay Login, ayaw pag-execute sa security check
+    if (currentFrame instanceof my_package.Login) {
+        return;
+    }
+
+    // 2. Security check para sa dashboards
+    if (my_package.Login.isLoggedIn == false) { 
+        currentFrame.setVisible(false);
+        javax.swing.JOptionPane.showMessageDialog(null, "Security Alert: Please log in first!");
+        currentFrame.dispose();
+        new my_package.Login().setVisible(true);
+        
+    }
+}
 }

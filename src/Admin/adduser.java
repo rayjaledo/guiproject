@@ -16,6 +16,10 @@ public String userID;
      */
     public adduser(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        new my_config.config().checkSession(this);
+        if (!this.isDisplayable()) {
+        return; // Hunongon ang constructor dinhi kon wala naka-login
+    }
         initComponents();
     }
 

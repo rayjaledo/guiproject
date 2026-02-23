@@ -5,7 +5,7 @@
  */
 package my_package;
 import Admin.admindash;
-import my_package.customerdash;
+import Customer.customerdash;
 import Staff.staffdash;
 
 /**
@@ -13,6 +13,8 @@ import Staff.staffdash;
  * @author pc
  */
 public class Login extends javax.swing.JFrame {
+
+    public static boolean isLoggedIn = false;
 
     /**
      * Creates new form Login
@@ -172,8 +174,7 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // 1. Get the data from your text fields
-        
+    // 1. Get the data from your text fields
     String user = jTextField_User.getText().trim(); 
     String pass = String.valueOf(jPasswordField1.getPassword());
 
@@ -190,36 +191,41 @@ public class Login extends javax.swing.JFrame {
 
     if (role != null) { 
         try {
-    // 1. Siguruha nga "login" ra ang table name, dili "login_logs"
-    String sqlLog = "INSERT INTO login (full_name, login_time) VALUES (?, CURRENT_TIMESTAMP)";
-    conf.recordSession(sqlLog, user); 
-    
-    javax.swing.JOptionPane.showMessageDialog(null, "Login Successful!");
+            // --- GIDUGANG NGA LINYA: I-set ang login status sa true ---
+            isLoggedIn = true; 
+            // ---------------------------------------------------------
 
-    if (role.equalsIgnoreCase("Admin")) {
-        // 2. Siguruha nga husto ang package name 'Admin'
-        Admin.admindash adm = new Admin.admindash(user);
-        adm.setVisible(true);
-    } 
-    else if (role.equalsIgnoreCase("Staff")) {
+            // 1. Siguruha nga "login" ra ang table name, dili "login_logs"
+            String sqlLog = "INSERT INTO login (full_name, login_time) VALUES (?, CURRENT_TIMESTAMP)";
+            conf.recordSession(sqlLog, user); 
+            
+            javax.swing.JOptionPane.showMessageDialog(null, "Login Successful!");
+
+            if (role.equalsIgnoreCase("Admin")) {
+                // 2. Siguruha nga husto ang package name 'Admin'
+                Admin.admindash adm = new Admin.admindash(user);
+                adm.setVisible(true);
+            } 
+            else if (role.equalsIgnoreCase("Staff")) {
                 // Siguruha nga ang package name sa staffdash husto (e.g., Staff.staffdash)
                 Staff.staffdash stf = new Staff.staffdash(); 
                 stf.setVisible(true);
-    }
-    else {
-        new customerdash().setVisible(true);
-    }
-    this.dispose();
+            }
+            else {
+                new Customer.customerdash().setVisible(true);
+            }
+            this.dispose();
 
-} catch (Exception e) {
-    // 3. USBA KINI: Para ipakita sa Java ang tinuod nga error gikan sa SQL
-    System.out.println("Actual SQL Error: " + e.getMessage()); 
-    e.printStackTrace(); 
-}
+        } catch (Exception e) {
+            // 3. USBA KINI: Para ipakita sa Java ang tinuod nga error gikan sa SQL
+            System.out.println("Actual SQL Error: " + e.getMessage()); 
+            e.printStackTrace(); 
+        }
     } else {
         // Error message kung mali ang credentials o wala ma-set ang u_status isip 'Active'
         javax.swing.JOptionPane.showMessageDialog(null, "Invalid Credentials or Account Pending!");
     }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
