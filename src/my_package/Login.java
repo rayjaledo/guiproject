@@ -202,9 +202,14 @@ public class Login extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(null, "Login Successful!");
 
             if (role.equalsIgnoreCase("Admin")) {
-                // 2. Siguruha nga husto ang package name 'Admin'
-                Admin.admindash adm = new Admin.admindash(user);
-                adm.setVisible(true);
+           
+
+            // Siguroha nga husto ang package name 'Admin'
+            Admin.admindash adm = new Admin.admindash(user); 
+            adm.setVisible(true);
+            adm.toFront();
+
+            this.dispose();
             } 
             else if (role.equalsIgnoreCase("Staff")) {
                 // Siguruha nga ang package name sa staffdash husto (e.g., Staff.staffdash)
@@ -212,14 +217,21 @@ public class Login extends javax.swing.JFrame {
                 stf.setVisible(true);
             }
             else {
-                new Customer.customerdash().setVisible(true);
-            }
+                System.out.println("Opening Customer Dashboard...");
+        Customer.customerdash dash = new Customer.customerdash();
+        
+        dash.setVisible(true); // Una ang setVisible
+        dash.toFront();        // I-force sa atubangan
+        dash.requestFocus();   // I-focus ang keyboard
+        
+        this.setVisible(false); // I-hide lang una ang Login (ayaw lang una i-dispose)
+    }
             this.dispose();
 
         } catch (Exception e) {
-            // 3. USBA KINI: Para ipakita sa Java ang tinuod nga error gikan sa SQL
-            System.out.println("Actual SQL Error: " + e.getMessage()); 
-            e.printStackTrace(); 
+    // I-pop up ang tinuod nga error aron mahibal-an nato kon ngano walay output
+          javax.swing.JOptionPane.showMessageDialog(null, "System Error: " + e.getMessage());
+          e.printStackTrace(); 
         }
     } else {
         // Error message kung mali ang credentials o wala ma-set ang u_status isip 'Active'
@@ -327,7 +339,11 @@ if (jPasswordField1.getEchoChar() == (char)0) {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login().setVisible(true);
+            // Paghimo og object para ma-check ang isDisplayable()
+            Customer.customerdash dash = new Customer.customerdash(); 
+            if (dash.isDisplayable()) {
+                dash.setVisible(true);
+            }
             }
         });
     }

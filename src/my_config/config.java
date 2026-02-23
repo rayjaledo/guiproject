@@ -190,19 +190,23 @@ public class config {
     // Sa sulod sa imong config class
 // Sa sulod sa imong config.java
 // Sa sulod sa imong my_config.config class
-   public void checkSession(java.awt.Window currentFrame) {
-    // 1. Kon ang frame kay Login, ayaw pag-execute sa security check
+  public void checkSession(java.awt.Window currentFrame) {
+      // 1. Kon ang frame kay Login, ayaw pag-execute sa security check
+
     if (currentFrame instanceof my_package.Login) {
         return;
     }
 
-    // 2. Security check para sa dashboards
+    // Siguroha nga husto ang spelling sa 'isLoggedIn'
     if (my_package.Login.isLoggedIn == false) { 
         currentFrame.setVisible(false);
         javax.swing.JOptionPane.showMessageDialog(null, "Security Alert: Please log in first!");
+        
+        // I-dispose ang dashboard sa dili pa ablihan ang login
         currentFrame.dispose();
         new my_package.Login().setVisible(true);
-        
+    } else {
+        currentFrame.setVisible(true); 
     }
 }
 }

@@ -34,12 +34,22 @@ public class customerdash extends javax.swing.JFrame {
      * Creates new form customerdash
      */
     public customerdash() {
-        new my_config.config().checkSession(this);
-        if (!this.isDisplayable()) {
-        return; // Hunongon ang constructor dinhi kon wala naka-login
+        // 1. Siguroha nga ang components ma-initialize una
+    initComponents(); 
+    
+    // 2. I-check ang session
+    new my_config.config().checkSession(this);
+    if (!this.isDisplayable()) {
+        return; 
     }
-        initComponents();
-        loadProducts();
+    
+    // 3. FORCE DISPLAY SETTINGS
+    this.setExtendedState(javax.swing.JFrame.NORMAL); // Siguroha nga dili kini minimized
+    this.setSize(1000, 700); // Manually set size para sigurado
+    this.setLocationRelativeTo(null); // I-center sa screen
+    
+    // 4. I-load ang products
+    loadProducts();
 // I-set ang 'Qty' column (Index 2) para mogamit og Spinner
 jTable_orders.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(new JTextField()) {
     private JSpinner spinner;
@@ -198,13 +208,15 @@ productBox.add(btnAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 145
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_orders = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel_products.setBackground(new java.awt.Color(255, 255, 255));
         jPanel_products.setLayout(new java.awt.GridLayout(0, 3));
-        getContentPane().add(jPanel_products, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 560, 540));
+        getContentPane().add(jPanel_products, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, 580, 550));
 
         btn_checkout.setBackground(new java.awt.Color(102, 255, 102));
         btn_checkout.setText("Checkout");
@@ -242,6 +254,16 @@ productBox.add(btnAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 145
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Order Summary");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 40, -1, -1));
+
+        jPanel1.setBackground(new java.awt.Color(153, 0, 0));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("RAY'S FASTFOOD");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 12, -1, 30));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 580, 50));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -389,6 +411,8 @@ public void calculateTotal() {
     private javax.swing.JButton btn_checkout;
     private javax.swing.JButton btn_remove;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel_products;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable_orders;
