@@ -177,59 +177,73 @@ public class SignUp extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_SignUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SignUpActionPerformed
-        // TODO add your handling code here:
-       
-  // 1. Kuhaa ang data gikan sa text fields
-String fullName = jTextField_FullName.getText().trim();
-String email = jTextField_Email.getText().trim();
-String password = String.valueOf(jPasswordField1.getPassword());
-
-// 2. Validation Logic
-if (fullName.equals("Full Name") || email.equals("Email") || 
-    password.equals("Password") || fullName.isEmpty() || email.isEmpty()) {
+ // 1. Get the data from text fields
+    String fullName = jTextField_FullName.getText().trim();
+    String email = jTextField_Email.getText().trim();
+    String password = String.valueOf(jPasswordField1.getPassword());
     
-    javax.swing.JOptionPane.showMessageDialog(this, 
-        "Please fill in all fields!", 
-        "Validation Error", 
-        javax.swing.JOptionPane.ERROR_MESSAGE);
-    return;
-}
+    // Assuming you have a way to define the role, default to "Customer"
+    String role = "Customer"; 
 
-try {
-    my_config.config conf = new my_config.config();
-    
-    // 3. KINI ANG SAKTONG PAAGI SA PAG-CHECK (Email lang ang i-pasa)
-    // Ang imong config.java nagkinahanglan og 'email' string, dili ang tibuok query.
-    if (conf.isEmailTaken(email)) { 
+    // 2. Validation Logic
+    if (fullName.equals("Full Name") || email.equals("Email") || 
+        password.equals("Password") || fullName.isEmpty() || email.isEmpty()) {
+        
         javax.swing.JOptionPane.showMessageDialog(this, 
-            "Email is already registered!", 
-            "Duplicate Email", 
-            javax.swing.JOptionPane.WARNING_MESSAGE);
-        return; 
+            "Please fill in all fields!", 
+            "Validation Error", 
+            javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
     }
 
-    // 4. Hash the password
-    String hashedPassword = conf.hashPassword(password);
-    
-    // 5. Match SQL columns (full_name, email, password)
-    String sql = "INSERT INTO sign_up (full_name, email, password, u_type, u_status) VALUES (?, ?, ?, ?, ?)";
-    
-    // I-save ang record gamit ang imong addRecord method
-    conf.addRecord(sql, fullName, email, hashedPassword, "Customer", "Active");
+    try {
+        my_config.config conf = new my_config.config();
+        
+        // 3. Check if email is already taken
+        if (conf.isEmailTaken(email)) { 
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Email is already registered!", 
+                "Duplicate Email", 
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return; 
+        }
 
-    // 6. Success handling ug transition sa Login
-    Login loginForm = new Login();
-    loginForm.setVisible(true);
-    loginForm.pack();
-    loginForm.setLocationRelativeTo(null);
-    this.dispose();
-    
-} catch (Exception e) {
-    javax.swing.JOptionPane.showMessageDialog(this, 
-        "System Error: " + e.getMessage(), 
-        "Error", 
-        javax.swing.JOptionPane.ERROR_MESSAGE);
-}
+        // 4. Hash the password
+        String hashedPassword = conf.hashPassword(password);
+        
+        // --- NEW LOGIC: Only Customers need approval ---
+        // If the role is Customer, set to Pending. Otherwise, set to Active.
+        String initialStatus = role.equalsIgnoreCase("Customer") ? "Pending" : "Active";
+        
+        // 5. Match SQL columns (full_name, email, password, u_type, u_status)
+        String sql = "INSERT INTO sign_up (full_name, email, password, u_type, u_status) VALUES (?, ?, ?, ?, ?)";
+        
+        // Save record with the dynamic status
+        conf.addRecord(sql, fullName, email, hashedPassword, role, initialStatus);
+
+        // 6. Conditional Success Message
+        if (initialStatus.equals("Pending")) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Registration Successful! Since you are a Customer, please wait for Admin approval.", 
+                "Registration Pending", 
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Registration Successful! You can now log in.");
+        }
+
+        // Transition back to Login
+        Login loginForm = new Login();
+        loginForm.setVisible(true);
+        loginForm.pack();
+        loginForm.setLocationRelativeTo(null);
+        this.dispose();
+        
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(this, 
+            "System Error: " + e.getMessage(), 
+            "Error", 
+            javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btn_SignUpActionPerformed
 
     private void jTextField_FullNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField_FullNameFocusGained

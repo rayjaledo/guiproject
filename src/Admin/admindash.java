@@ -12,6 +12,15 @@ import java.sql.*;
 import net.proteanit.sql.DbUtils; 
 import javax.swing.JOptionPane; 
 import Admin.AdminProfile;
+import Admin.addproduct;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
+import java.awt.AlphaComposite;
+import java.awt.Image;
+import java.awt.RenderingHints;
 
 
 /**
@@ -33,10 +42,15 @@ ResultSet rs = null;
         return; // Hunongon ang constructor dinhi kon wala naka-login
     }
         initComponents();
-    this.loggedInUser = user;
+       
+        this.loggedInUser = user;
+   
+    
     refreshTable();
-    displayProducts();
+    
     }
+
+
     public void displayProducts() {
     try {
         java.sql.Connection conn = java.sql.DriverManager.getConnection("jdbc:sqlite:project.db");
@@ -57,29 +71,31 @@ ResultSet rs = null;
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
    public void refreshTable() {
-    try {
+   try {
         java.sql.Connection conn = java.sql.DriverManager.getConnection("jdbc:sqlite:project.db");
+        // SELECT query para sa imong mga produkto
         String sql = "SELECT p_id as 'ID', p_name as 'Product Name', p_category as 'Category', p_price as 'Price' FROM products";
         java.sql.PreparedStatement pst = conn.prepareStatement(sql);
         java.sql.ResultSet rs = pst.executeQuery();
 
-        // 1. I-load ang database data (Kini ang mo-reset sa table)
+        // 1. I-load ang database data sa table
         productTable.setModel(net.proteanit.sql.DbUtils.resultSetToTableModel(rs));
 
-        // 2. I-add pag-usab ang columns para sa buttons
+        // 2. I-add ang dugang nga columns para sa buttons
         DefaultTableModel model = (DefaultTableModel) productTable.getModel();
         model.addColumn("Update");
         model.addColumn("Delete");
 
-        // 3. I-BUTANG PAG-USAB ANG TEXT SA MATAG ROW (Importante!)
+        // 3. I-butang ang text nga "Update" ug "Delete" sa matag row
         for (int i = 0; i < productTable.getRowCount(); i++) {
-            productTable.setValueAt("Update", i, 4); // Column index 4
-            productTable.setValueAt("Delete", i, 5); // Column index 5
-        }
+    productTable.setValueAt("Update", i, 4); 
+    productTable.setValueAt("Delete", i, 5); 
+}
 
-        // 4. I-reapply ang Renderers ug Editors
+        // 4. I-reapply ang Renderers ug Editors para mahimong clickable buttons
         productTable.getColumn("Update").setCellRenderer(new my_package.ButtonRenderer("Update"));
         productTable.getColumn("Delete").setCellRenderer(new my_package.ButtonRenderer("Delete"));
+        
         productTable.getColumn("Update").setCellEditor(new my_package.ButtonEditor(productTable, "Update"));
         productTable.getColumn("Delete").setCellEditor(new my_package.ButtonEditor(productTable, "Delete"));
 
@@ -87,6 +103,7 @@ ResultSet rs = null;
     } catch (Exception e) {
         javax.swing.JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
     }
+
 }
 
     /**
@@ -99,25 +116,25 @@ ResultSet rs = null;
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         lbl_logout = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        lbl_profile_pic = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jTextField2 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        AddProduct = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
-        viewusers = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         productTable = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        btn_SR = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -125,20 +142,12 @@ ResultSet rs = null;
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTextField1.setEditable(false);
-        jTextField1.setBackground(new java.awt.Color(204, 0, 0));
-        jTextField1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("RAY'S FAST FOOD");
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 930, 50));
-
         jPanel2.setBackground(new java.awt.Color(249, 231, 159));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel1.setText("Dashboard");
-        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 70, 30));
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 70, 30));
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel2.setText("Products");
@@ -152,10 +161,6 @@ ResultSet rs = null;
         jLabel4.setText("Orders");
         jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, -1, -1));
 
-        jLabel5.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel5.setText("Sales Reports");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, 90, -1));
-
         lbl_logout.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lbl_logout.setText("Logout");
         lbl_logout.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -163,103 +168,25 @@ ResultSet rs = null;
                 lbl_logoutMouseClicked(evt);
             }
         });
-        jPanel2.add(lbl_logout, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 50, -1));
+        jPanel2.add(lbl_logout, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, 50, -1));
 
-        jLabel7.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel7.setText("Admin Profile");
-        jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
+        lbl_profile_pic.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        lbl_profile_pic.setText("Admin Profile");
+        lbl_profile_pic.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel7MouseClicked(evt);
+                lbl_profile_picMouseClicked(evt);
             }
         });
-        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 90, -1));
+        jPanel2.add(lbl_profile_pic, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 90, -1));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 130, 420));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTextField2.setEditable(false);
-        jTextField2.setBackground(new java.awt.Color(204, 0, 0));
-        jTextField2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jTextField2.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField2.setText("ADMIN PANEL");
-        jPanel3.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 30));
-
         jLabel6.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel6.setText("Manage Products");
-        jPanel3.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 140, -1));
-
-        AddProduct.setEditable(false);
-        AddProduct.setBackground(new java.awt.Color(255, 153, 0));
-        AddProduct.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        AddProduct.setForeground(new java.awt.Color(255, 255, 255));
-        AddProduct.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        AddProduct.setText("Add Product");
-        AddProduct.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                AddProductMouseClicked(evt);
-            }
-        });
-        AddProduct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddProductActionPerformed(evt);
-            }
-        });
-        jPanel3.add(AddProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, 120, 30));
-
-        jTextField4.setEditable(false);
-        jTextField4.setBackground(new java.awt.Color(255, 153, 0));
-        jTextField4.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        jTextField4.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField4.setText("Manage Categories");
-        jPanel3.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 70, 120, 30));
-
-        jTextField5.setEditable(false);
-        jTextField5.setBackground(new java.awt.Color(255, 153, 0));
-        jTextField5.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        jTextField5.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField5.setText("View Sales Reports");
-        jPanel3.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 70, 120, 30));
-
-        jTextField6.setEditable(false);
-        jTextField6.setBackground(new java.awt.Color(255, 153, 0));
-        jTextField6.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        jTextField6.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField6.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField6.setText("View Orders");
-        jTextField6.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTextField6MouseClicked(evt);
-            }
-        });
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
-            }
-        });
-        jPanel3.add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 70, 110, 30));
-
-        viewusers.setEditable(false);
-        viewusers.setBackground(new java.awt.Color(255, 153, 0));
-        viewusers.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        viewusers.setForeground(new java.awt.Color(255, 255, 255));
-        viewusers.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        viewusers.setText("View Users");
-        viewusers.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                viewusersMouseClicked(evt);
-            }
-        });
-        viewusers.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewusersActionPerformed(evt);
-            }
-        });
-        jPanel3.add(viewusers, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 70, 110, 30));
+        jPanel3.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 140, -1));
 
         productTable.setBackground(new java.awt.Color(204, 204, 204));
         productTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -273,32 +200,65 @@ ResultSet rs = null;
         productTable.setRowHeight(40);
         jScrollPane1.setViewportView(productTable);
 
-        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 600, 230));
+        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, 620, 250));
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 60, 770, 390));
+        jPanel4.setBackground(new java.awt.Color(204, 0, 0));
+
+        jLabel9.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel9.setText("ADMIN PANEL");
+        jPanel4.add(jLabel9);
+
+        jPanel3.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 770, 40));
+
+        jButton1.setText("View Users");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 80, 120, 40));
+
+        jButton2.setText("View Orders");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 80, 120, 40));
+
+        jButton3.setText("Add Product");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 120, 40));
+
+        btn_SR.setText("View Sales Report");
+        btn_SR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_SRActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btn_SR, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 80, 130, 40));
+
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 60, 770, 400));
+
+        jPanel5.setBackground(new java.awt.Color(204, 0, 0));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel8.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setText("RAY'S FAST FOOD");
+        jPanel5.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 10, -1, -1));
+
+        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 930, 50));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 930, 470));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void viewusersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewusersMouseClicked
-                                              
-    // Siguraduha nga gamay tanan ang letra sa "viewusers" 
-    // base sa imong file name sa Projects tab
-    viewusers vu = new viewusers(); 
-    vu.setVisible(true); // I-pakita ang pikas frame
-    this.dispose();      // I-close ang Admin Panel
-
-    }//GEN-LAST:event_viewusersMouseClicked
-
-    private void AddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddProductActionPerformed
-  
-    }//GEN-LAST:event_AddProductActionPerformed
-
-    private void viewusersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewusersActionPerformed
-  
-    }//GEN-LAST:event_viewusersActionPerformed
 
     private void lbl_logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_logoutMouseClicked
         // 1. Confirmation Dialog
@@ -317,37 +277,49 @@ ResultSet rs = null;
     }
     }//GEN-LAST:event_lbl_logoutMouseClicked
 
-    private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
-        AdminProfile profile = new AdminProfile(loggedInUser);
-    profile.setVisible(true);
+    private void lbl_profile_picMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbl_profile_picMouseClicked
+    AdminProfile ap = new AdminProfile(this.loggedInUser); 
+    ap.setVisible(true);
     this.dispose();
-    }//GEN-LAST:event_jLabel7MouseClicked
+    }//GEN-LAST:event_lbl_profile_picMouseClicked
 
-    private void AddProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddProductMouseClicked
-        // 1. Paghimo og instance sa imong JDialog
-    // Siguruha nga "addproduct" ang saktong spelling sa imong JDialog class
-    addproduct add = new addproduct(this, true); 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // 1. I-open ang viewusers frame (siguroha nga naa na kay viewusers.java)
+    viewusers vu = new viewusers(); 
+    vu.setVisible(true);
     
-    // 2. I-center ang dialog sa tunga sa dashboard
-    add.setLocationRelativeTo(this);
+    // 2. I-close ang karaan nga dashboard
+    this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // I-open ang vieworders frame
+    vieworders vo = new vieworders();
+    vo.setVisible(true);
+    this.dispose(); // I-close ang admin dashboard
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+// Kinahanglan (this, true) tungod kay JDialog ang addproduct
+    addproduct ap = new addproduct(this, true); 
+    ap.setLocationRelativeTo(null); // Para ma-center ang window
+    ap.setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void btn_SRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SRActionPerformed
+  String dateInput = btn_SR.getText().trim(); 
     
-    // 3. I-pakita ang dialog
-    add.setVisible(true);
-    
-    // 4. Human og close sa dialog, i-refresh ang table para makita ang bag-ong data
-    refreshTable(); 
-
-    }//GEN-LAST:event_AddProductMouseClicked
-
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
-        // I-refresh ang data inig abli
-    }//GEN-LAST:event_jTextField6ActionPerformed
-
-    private void jTextField6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField6MouseClicked
-        vieworders vo = new vieworders();
-        vo.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jTextField6MouseClicked
+    if (!dateInput.isEmpty() && !dateInput.equals("Enter Date (YYYY-MM-DD)")) {
+        try {
+            // Mao ni ang saktong pagtawag: (Parent, Modal, String)
+            SREPORT sr = new SREPORT(this, true, dateInput); 
+            sr.setLocationRelativeTo(null);
+            sr.setVisible(true);
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
+    }//GEN-LAST:event_btn_SRActionPerformed
 
     /**
      * @param args the command line arguments
@@ -386,25 +358,25 @@ ResultSet rs = null;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField AddProduct;
+    private javax.swing.JButton btn_SR;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
     private javax.swing.JLabel lbl_logout;
+    private javax.swing.JLabel lbl_profile_pic;
     private javax.swing.JTable productTable;
-    private javax.swing.JTextField viewusers;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,6 +5,13 @@
  */
 package Staff;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author pc
@@ -16,8 +23,108 @@ public class staffdash extends javax.swing.JFrame {
      */
     public staffdash() {
         initComponents();
+        displayOrders();
+        displayStats();
     }
+   public void displayOrders() {
+    // Siguroha nga ang Variable Name sa imong table kay jTable_orderList
+    DefaultTableModel model = (DefaultTableModel) jTable_orderList.getModel();
+    model.setRowCount(0); 
 
+    try {
+        Connection conn = DriverManager.getConnection("jdbc:sqlite:project.db");
+        
+        // Gikuha nato ang tanan (*) gikan sa orders table
+        String sql = "SELECT * FROM orders"; 
+        PreparedStatement pst = conn.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+
+        while (rs.next()) {
+            // Siguroha nga husto ang spelling sa column names gikan sa DB
+            String id = rs.getString("order_id");
+            String customer = rs.getString("customer_name");
+            String items = rs.getString("item_name");
+            int qty = rs.getInt("qty");
+            double price = rs.getDouble("item_price");
+            double total = rs.getDouble("total_price");
+            String date = rs.getString("order_date");
+            String status = rs.getString("status");
+
+            // I-add ang row sa table base sa imong Design
+            model.addRow(new Object[]{id, customer, items, qty, price, total, date, status});
+        }
+        conn.close();
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+    }
+}
+ public void displayStats() {
+        my_config.config conf = new my_config.config();
+        
+        // Pagkuha sa data gikan sa imong config.java methods
+        String orders = conf.getTotalOrdersToday();
+        String sales = conf.getTotalSalesToday();
+        
+        // I-update ang mga labels gamit ang bag-ong variable names
+        lbl_total_orders.setText("Total Orders Today: " + orders);
+        
+        // Kon blangko gihapon ang sales, butangan nato og default
+        if (sales == null || sales.isEmpty() || sales.equals("₱ 0.00")) {
+            lbl_total_sales.setText("Total Sales: ₱ 0.00");
+        } else {
+            lbl_total_sales.setText("Total Sales: " + sales);
+        }
+    }
+ // CODE PARA SA STAFFDASH.JAVA
+public void changeStatus(String newStatus) {
+    // 1. Kuhaa ang tanang napili nga rows
+    int[] selectedRows = jTable_orderList.getSelectedRows();
+
+    if (selectedRows.length > 0) {
+        try {
+            my_config.config conf = new my_config.config();
+            
+            // 2. Loop para sa matag napili nga order
+            for (int row : selectedRows) {
+                String idStr = jTable_orderList.getValueAt(row, 0).toString();
+                String currentStatus = jTable_orderList.getValueAt(row, 7).toString();
+
+                // --- IMONG MGA PUGONG (RESTRICTIONS) - GIPABILIN NAKO ---
+                
+                if (currentStatus.equalsIgnoreCase("Cancelled")) {
+                    // I-skip lang kini nga row ug proceed sa sunod sa listahan
+                    continue; 
+                }
+
+                if (currentStatus.equalsIgnoreCase("Served") && 
+                   (newStatus.equalsIgnoreCase("Preparing") || newStatus.equalsIgnoreCase("Ready"))) {
+                    continue;
+                }
+
+                if (currentStatus.equalsIgnoreCase("Ready") && newStatus.equalsIgnoreCase("Preparing")) {
+                    continue;
+                }
+                
+                // Pugong kon ang status pareha na sa imong i-update
+                if (currentStatus.equalsIgnoreCase(newStatus)) {
+                    continue;
+                }
+
+                // --- UPDATE SA DATABASE (Executed lang kon nakalapas sa restrictions) ---
+                conf.updateOrderStatus(idStr, newStatus);
+            }
+
+            // --- REFRESH HUMAN SA LOOP ---
+            conf.viewOrders(jTable_orderList);
+            displayStats();
+
+        } catch (Exception e) {
+            System.out.println("Error sa UI: " + e.getMessage());
+        }
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "Please select at least one order from the table first.");
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,59 +135,204 @@ public class staffdash extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jTextField2 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable_orderList = new javax.swing.JTable();
+        lbl_total_orders = new javax.swing.JLabel();
+        lbl_total_sales = new javax.swing.JLabel();
+        btn_preparing = new javax.swing.JButton();
+        btn_ready = new javax.swing.JButton();
+        btn_served = new javax.swing.JButton();
+        btn_cancel = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTextField1.setBackground(new java.awt.Color(204, 0, 0));
-        jTextField1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("RAY'S FASTFOOD");
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 790, 40));
-
-        jPanel2.setBackground(new java.awt.Color(249, 231, 159));
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 130, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 420, Short.MAX_VALUE)
-        );
-
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 130, 420));
-
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTextField2.setBackground(new java.awt.Color(204, 0, 0));
-        jTextField2.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        jTextField2.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField2.setText("STAFF PANEL");
-        jPanel3.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 620, 50));
+        jButton1.setBackground(new java.awt.Color(0, 204, 0));
+        jButton1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("View Daily Reports");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 140, 30));
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, 620, 370));
+        jButton2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jButton2.setText("View Menu");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 70, 130, 30));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 790, 460));
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel1.setText("Order List");
+        jPanel3.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 70, 10));
+
+        jTable_orderList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Order ID", "Customer", "Items", "Quantity", "Price", "Total Price", "Order Date", "Status"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable_orderList);
+
+        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, 580, 250));
+
+        lbl_total_orders.setText("Total Orders Today:");
+        jPanel3.add(lbl_total_orders, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, 130, 20));
+
+        lbl_total_sales.setText("Total Sales:");
+        jPanel3.add(lbl_total_sales, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 400, 250, 20));
+
+        btn_preparing.setBackground(new java.awt.Color(255, 102, 0));
+        btn_preparing.setForeground(new java.awt.Color(255, 255, 255));
+        btn_preparing.setText("Mark as Preparing");
+        btn_preparing.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_preparingActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btn_preparing, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 140, 130, 40));
+
+        btn_ready.setText("Mark as Ready");
+        btn_ready.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_readyActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btn_ready, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 190, 130, 40));
+
+        btn_served.setText("Mark as Served");
+        btn_served.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_servedActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btn_served, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 240, 130, 40));
+
+        btn_cancel.setBackground(new java.awt.Color(255, 0, 0));
+        btn_cancel.setForeground(new java.awt.Color(255, 255, 255));
+        btn_cancel.setText("Cancel Order");
+        btn_cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cancelActionPerformed(evt);
+            }
+        });
+        jPanel3.add(btn_cancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 290, 130, 40));
+
+        jPanel4.setBackground(new java.awt.Color(204, 0, 0));
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("STAFF PANEL");
+        jPanel4.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 0, -1, 50));
+
+        jPanel3.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 50));
+
+        jLabel4.setText("Logout");
+        jLabel4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel4MouseClicked(evt);
+            }
+        });
+        jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 350, -1, -1));
+
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, 780, 430));
+
+        jPanel2.setBackground(new java.awt.Color(204, 0, 0));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("RAY'S FAST FOOD");
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 10, -1, -1));
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 860, 50));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 860, 530));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // Pag-create og instance sa imong pop-up
+    SalesReport report = new SalesReport(this, true); 
+    report.setVisible(true); // Kini ang mo-display sa pop-up
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    VProducts vp = new VProducts(this, true); 
+    vp.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void btn_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelActionPerformed
+        changeStatus("Cancelled");
+    }//GEN-LAST:event_btn_cancelActionPerformed
+
+    private void btn_preparingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_preparingActionPerformed
+       changeStatus("Preparing");
+    }//GEN-LAST:event_btn_preparingActionPerformed
+
+    private void btn_servedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_servedActionPerformed
+        changeStatus("Served");
+    }//GEN-LAST:event_btn_servedActionPerformed
+
+    private void btn_readyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_readyActionPerformed
+        changeStatus("Ready");
+    }//GEN-LAST:event_btn_readyActionPerformed
+
+    private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
+             // 1. Confirmation Dialog
+    int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Logout Confirmation", JOptionPane.YES_NO_OPTION);
+    
+    if (a == JOptionPane.YES_OPTION) { // Mas safe gamiton ang YES_OPTION kaysa manual nga '0'
+        // 2. Paghimo og instance sa Login frame
+        // Siguraduha nga ang spelling ni-match sa imong Login file
+        my_package.Login loginFrame = new my_package.Login(); 
+        
+        // 3. I-pakita ang login screen
+        loginFrame.setVisible(true); 
+        
+        // 4. I-close ang karaan nga dashboard
+        this.dispose(); 
+    }
+    }//GEN-LAST:event_jLabel4MouseClicked
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+       try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(staffdash.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -113,10 +365,23 @@ public class staffdash extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_cancel;
+    private javax.swing.JButton btn_preparing;
+    private javax.swing.JButton btn_ready;
+    private javax.swing.JButton btn_served;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable_orderList;
+    private javax.swing.JLabel lbl_total_orders;
+    private javax.swing.JLabel lbl_total_sales;
     // End of variables declaration//GEN-END:variables
 }

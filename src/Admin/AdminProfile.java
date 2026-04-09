@@ -39,36 +39,43 @@ public class AdminProfile extends javax.swing.JFrame {
     }
         initComponents();
         this.loggedInUser = user;
+        String destinationPath = "";
         loadUserData();
         
     }
 private void loadUserData() {
     try {
         my_config.config conf = new my_config.config();
-        // Gamita ang connectDB() kay mao ni ang naa sa imong config class
         java.sql.Connection conn = conf.connectDB(); 
 
-        // Siguruha nga husto ang table name (sign_up)
-        String sql = "SELECT full_name, email, profile_picture FROM sign_up WHERE full_name = ?";
+        // Mas maayo kon email ang gamiton sa WHERE clause kay unique kini
+        String sql = "SELECT full_name, email, profile_picture FROM sign_up WHERE email = ?";
         java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, loggedInUser);
+        pst.setString(1, loggedInUser); // Siguroha nga ang 'loggedInUser' kay ang email sa admin
 
         java.sql.ResultSet rs = pst.executeQuery();
 
         if (rs.next()) {
-            jTextField2.setText(rs.getString("full_name"));
-            jTextField3.setText(rs.getString("email"));
+            // I-display ang data sa imong mga textfields
+            jTextField2.setText(rs.getString("full_name")); // Fullname field
+            jTextField3.setText(rs.getString("email"));     // Email field
             
+            // I-load ang profile picture kon naa
             String imagePath = rs.getString("profile_picture");
             if (imagePath != null && !imagePath.isEmpty()) {
-                // Tawgon ang makeCircleImage para mahimong lingin ang picture
-                ImageIcon circleIcon = makeCircleImage(imagePath, lbl_image.getWidth());
+                int diameter = (lbl_image.getWidth() > 0) ? lbl_image.getWidth() : 150;
+                ImageIcon circleIcon = makeCircleImage(imagePath, diameter);
                 lbl_image.setIcon(circleIcon);
             }
+        } else {
+            System.out.println("No record found for: " + loggedInUser);
         }
+        
+        rs.close();
+        pst.close();
         conn.close();
     } catch (Exception e) {
-        e.printStackTrace();
+        System.out.println("Error loading profile: " + e.getMessage());
     }
 }
 public ImageIcon makeCircleImage(String imagePath, int diameter) {
@@ -105,7 +112,6 @@ public ImageIcon makeCircleImage(String imagePath, int diameter) {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -117,13 +123,16 @@ public ImageIcon makeCircleImage(String imagePath, int diameter) {
         lbl_image = new javax.swing.JLabel();
         btn_browse = new javax.swing.JButton();
         btn_save = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -132,14 +141,6 @@ public ImageIcon makeCircleImage(String imagePath, int diameter) {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jTextField1.setEditable(false);
-        jTextField1.setBackground(new java.awt.Color(153, 0, 0));
-        jTextField1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("ADMIN PANEL");
-        jPanel2.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 70));
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -193,44 +194,56 @@ public ImageIcon makeCircleImage(String imagePath, int diameter) {
         });
         jPanel4.add(btn_save, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 200, 90, -1));
 
-        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 90, 700, 280));
+        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 90, 610, 280));
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 130, 780, 410));
+        jPanel6.setBackground(new java.awt.Color(204, 0, 0));
+        jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel11.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel11.setText("ADMIN PANEL");
+        jPanel6.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 0, -1, 50));
+
+        jPanel2.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 670, 50));
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 90, 670, 410));
 
         jPanel5.setBackground(new java.awt.Color(249, 231, 159));
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel6.setText("Product");
-        jPanel5.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 88, 37));
+        jPanel5.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 88, 37));
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel5.setText("Staff Account");
-        jPanel5.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 90, -1));
+        jPanel5.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 110, 30));
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel7.setText("Orders");
-        jPanel5.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, -1, -1));
+        jPanel5.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, -1, -1));
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel8.setText("Sales Report");
-        jPanel5.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 210, 80, -1));
+        jPanel5.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 90, -1));
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel10.setText("Admin Profile");
-        jPanel5.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 260, 90, -1));
+        jPanel5.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 90, -1));
 
-        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 130, 500));
+        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 130, 470));
 
-        jTextField4.setEditable(false);
-        jTextField4.setBackground(new java.awt.Color(153, 0, 0));
-        jTextField4.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jTextField4.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField4.setText("RAY'S FAST FOOD");
-        jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 990, 80));
+        jPanel3.setBackground(new java.awt.Color(204, 0, 0));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 990, 580));
+        jLabel9.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel9.setText("ADMIN PROFILE");
+        jPanel3.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 0, -1, 60));
+
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 880, 60));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 860, 530));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -267,24 +280,42 @@ public ImageIcon makeCircleImage(String imagePath, int diameter) {
     }//GEN-LAST:event_btn_browseActionPerformed
 
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
-        try {
+    try {
+        // 1. Check if a picture has been selected via the Browse button
+        if (destinationPath == null || destinationPath.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a picture using the Browse button first.");
+            return;
+        }
+
+        // 2. Establish Database Connection
         my_config.config conf = new my_config.config();
-        Connection conn = conf.connectDB(); // Gamit ang imong connectDB method
+        java.sql.Connection conn = conf.connectDB(); 
         
-        // SQL Query para ma-update ang Email ug Picture path base sa Fullname
-        String sql = "UPDATE sign_up SET email = ?, profile_picture = ? WHERE full_name = ?";
-        PreparedStatement pst = conn.prepareStatement(sql);
+        // 3. SQL Update Query
+        // We use LOWER() on both sides to match "Admin" with "admin" successfully.
+        String sql = "UPDATE sign_up SET profile_picture = ? WHERE LOWER(full_name) = LOWER(?)";
+        java.sql.PreparedStatement pst = conn.prepareStatement(sql);
         
-        pst.setString(1, jTextField3.getText()); // jTextField3 ang imong email field
-        pst.setString(2, destinationPath);       // Ang path sa picture gikan sa browse button
-        pst.setString(3, loggedInUser);          // Ang session variable gikan sa Login
+        pst.setString(1, destinationPath); // The file path from your JFileChooser
+        pst.setString(2, loggedInUser);    // The session variable (e.g., "admin")
         
-        pst.executeUpdate();
-        JOptionPane.showMessageDialog(null, "Profile Updated Successfully!");
+        int rowsAffected = pst.executeUpdate();
+        
+        // 4. Provide Visual Feedback via JOptionPane
+        if (rowsAffected > 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Success! Your profile picture has been saved.");
+   
+        } else {
+            // This triggers if no user in the database matches the 'loggedInUser' name
+            javax.swing.JOptionPane.showMessageDialog(this, "Save Failed: User '" + loggedInUser + "' not found in database.");
+        }
+        
+        // 5. Close connection to prevent database locking
         conn.close();
-        
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+        // Displays the specific SQL or Connection error
+        javax.swing.JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
+        e.printStackTrace();
     }
 
     }//GEN-LAST:event_btn_saveActionPerformed
@@ -331,6 +362,7 @@ public ImageIcon makeCircleImage(String imagePath, int diameter) {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -338,14 +370,15 @@ public ImageIcon makeCircleImage(String imagePath, int diameter) {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JLabel lbl_image;
     // End of variables declaration//GEN-END:variables
 }

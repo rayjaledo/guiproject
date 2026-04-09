@@ -34,15 +34,13 @@ public class vieworders extends javax.swing.JFrame {
     }
 public void loadOrdersToTable() {
     try {
-        // 1. Connect sa database
         Connection conn = DriverManager.getConnection("jdbc:sqlite:project.db");
-        
-        // 2. Query sa tanang data
-        String sql = "SELECT * FROM orders ORDER BY order_id ";
+        String sql = "SELECT * FROM orders ORDER BY order_id";
         PreparedStatement pst = conn.prepareStatement(sql);
         ResultSet rs = pst.executeQuery();
 
-        // 3. KINI ANG IMPORTANTE: Automatic display sa columns ug data
+        // Siguroha nga true kini aron mo-generate ang columns
+        jTable_allOrders.setAutoCreateColumnsFromModel(true); 
         jTable_allOrders.setModel(net.proteanit.sql.DbUtils.resultSetToTableModel(rs));
         
         conn.close();
@@ -60,19 +58,39 @@ public void loadOrdersToTable() {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel4 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_allOrders = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
         txt_search = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jPanel4.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel5.setBackground(new java.awt.Color(204, 0, 0));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("VIEW ORDERS");
+        jPanel5.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 2, -1, 60));
+
+        jPanel4.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 900, 60));
+
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jTable_allOrders.setAutoCreateColumnsFromModel(false);
+        jTable_allOrders.setAutoCreateRowSorter(true);
         jTable_allOrders.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -83,15 +101,7 @@ public void loadOrdersToTable() {
         ));
         jScrollPane1.setViewportView(jTable_allOrders);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 80, 756, -1));
-
-        jButton1.setText("Back");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 500, 90, -1));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, 760, 280));
 
         txt_search.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -111,42 +121,55 @@ public void loadOrdersToTable() {
                 txt_searchKeyReleased(evt);
             }
         });
-        jPanel1.add(txt_search, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 30, 150, -1));
+        jPanel1.add(txt_search, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 60, 150, 30));
 
         jLabel1.setText("Search");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 30, -1, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 60, 40, 30));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 17, 865, 550));
+        jPanel2.setBackground(new java.awt.Color(204, 0, 0));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("ORDERS");
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 10, -1, -1));
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 40));
+
+        jButton2.setText("Back");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 390, 70, -1));
+
+        jPanel4.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, -1, 420));
+
+        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 30, 900, 510));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       // 1. Paghimo og instance sa Admin Dashboard
-    // Kinahanglan nimo i-pass ang 'loggedInUser' (o kung unsa man ang variable name sa user)
-    // Kung wala kay variable para sa user sa 'viewusers' frame, gamita lang una ang "Admin" 
-    admindash admin = new admindash("Admin"); 
-    
-    // 2. I-pakita ang dashboard
-    admin.setVisible(true); 
-    
-    // 3. I-close ang kasamtangan nga frame
-    this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
-       String query = txt_search.getText();                
+    String query = txt_search.getText();                
     
-    DefaultTableModel model = (DefaultTableModel) jTable_allOrders.getModel();
-    TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>(model);
-    jTable_allOrders.setRowSorter(trs);                
-    
-    // "(?i)" para dili case-sensitive (maski dako o gamay nga letra)
-    trs.setRowFilter(RowFilter.regexFilter("(?i)" + query));
+    // Kon walay gi-type o ang placeholder ra ang naa, ayaw i-filter
+    if (query.equals("Search...") || query.isEmpty()) {
+        jTable_allOrders.setRowSorter(null); // Ipakita tanan
+    } else {
+        // Kon nag-type na ang user (nga itom ang color), i-filter na ang table
+        DefaultTableModel model = (DefaultTableModel) jTable_allOrders.getModel();
+        TableRowSorter<DefaultTableModel> trs = new TableRowSorter<>(model);
+        jTable_allOrders.setRowSorter(trs);                
+        trs.setRowFilter(RowFilter.regexFilter("(?i)" + query));
+    }
+
     }//GEN-LAST:event_txt_searchKeyReleased
 
     private void txt_searchFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_searchFocusGained
-      if(txt_search.getText().equals("Search...")){
+    if(txt_search.getText().equals("Search...")){
         txt_search.setText(""); // Ma-clear ang "Search..."
         txt_search.setForeground(new java.awt.Color(0,0,0)); // Mahimong itom
     }
@@ -162,6 +185,17 @@ public void loadOrdersToTable() {
     private void txt_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_searchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_searchActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+    admindash admin = new admindash("Admin"); 
+    
+    // 2. I-pakita ang dashboard
+    admin.setVisible(true); 
+    
+    // 3. I-close ang kasamtangan nga frame
+    this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -199,9 +233,14 @@ public void loadOrdersToTable() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable_allOrders;
     private javax.swing.JTextField txt_search;

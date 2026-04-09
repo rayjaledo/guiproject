@@ -15,6 +15,7 @@ import Staff.staffdash;
 public class Login extends javax.swing.JFrame {
 
     public static boolean isLoggedIn = false;
+    public static String loggedInFullName = "";
 
     /**
      * Creates new form Login
@@ -174,68 +175,62 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    // 1. Get the data from your text fields
+   // 1. Get input
     String user = jTextField_User.getText().trim(); 
     String pass = String.valueOf(jPasswordField1.getPassword());
 
-    // Validation para sa empty o placeholder inputs
-    if (user.equals("Username") || pass.equals("Password") || user.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Please enter your credentials!");
-        return;
-    }
-
     my_config.config conf = new my_config.config();
+    
+    // 2. Fetch both u_type and u_status
+    String[] data = conf.getUserData(user, pass); 
 
-    // 2. Kani nga part ang gi-fix: Pagkuha sa role gamit ang imong bag-ong config method
-    String role = conf.getUserRole(user, pass); 
+    if (data != null) {
+        String role = data[0];
+        String status = data[1];
 
-    if (role != null) { 
+        // 3. CHECK APPROVAL ONLY FOR CUSTOMERS
+        if (role.equalsIgnoreCase("Customer") && !status.equalsIgnoreCase("Active")) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Customer accounts require Admin approval. Please wait.", 
+                "Approval Required", 
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return; // Stop the login process
+        }
+
+        // 4. IF ADMIN, STAFF, OR ACTIVE CUSTOMER -> PROCEED
         try {
-            // --- GIDUGANG NGA LINYA: I-set ang login status sa true ---
-            isLoggedIn = true; 
-            // ---------------------------------------------------------
-
-            // 1. Siguruha nga "login" ra ang table name, dili "login_logs"
+            isLoggedIn = true;
+            loggedInFullName = conf.getFullName(user);
+            
+            // --- SESSION RECORDING ---
+            // Record the session in the login table
             String sqlLog = "INSERT INTO login (full_name, login_time) VALUES (?, CURRENT_TIMESTAMP)";
             conf.recordSession(sqlLog, user); 
             
-            javax.swing.JOptionPane.showMessageDialog(null, "Login Successful!");
-
+            // --- SUCCESS MESSAGE ---
+            javax.swing.JOptionPane.showMessageDialog(null, "Login Successful! Welcome " + loggedInFullName);
+            
+            // --- REDIRECT LOGIC ---
             if (role.equalsIgnoreCase("Admin")) {
-           
-
-            // Siguroha nga husto ang package name 'Admin'
-            Admin.admindash adm = new Admin.admindash(user); 
-            adm.setVisible(true);
-            adm.toFront();
-
-            this.dispose();
-            } 
-            else if (role.equalsIgnoreCase("Staff")) {
-                // Siguruha nga ang package name sa staffdash husto (e.g., Staff.staffdash)
-                Staff.staffdash stf = new Staff.staffdash(); 
+                Admin.admindash adm = new Admin.admindash(user);
+                adm.setVisible(true);
+            } else if (role.equalsIgnoreCase("Staff")) {
+                Staff.staffdash stf = new Staff.staffdash();
                 stf.setVisible(true);
+            } else {
+                Customer.customerdash dash = new Customer.customerdash(loggedInFullName);
+                dash.setVisible(true);
             }
-            else {
-                System.out.println("Opening Customer Dashboard...");
-        Customer.customerdash dash = new Customer.customerdash();
-        
-        dash.setVisible(true); // Una ang setVisible
-        dash.toFront();        // I-force sa atubangan
-        dash.requestFocus();   // I-focus ang keyboard
-        
-        this.setVisible(false); // I-hide lang una ang Login (ayaw lang una i-dispose)
-    }
-            this.dispose();
+            
+            this.dispose(); // Close the login window
 
         } catch (Exception e) {
-    // I-pop up ang tinuod nga error aron mahibal-an nato kon ngano walay output
-          javax.swing.JOptionPane.showMessageDialog(null, "System Error: " + e.getMessage());
-          e.printStackTrace(); 
+            javax.swing.JOptionPane.showMessageDialog(this, "System Error: " + e.getMessage());
+            e.printStackTrace();
         }
     } else {
-        // Error message kung mali ang credentials o wala ma-set ang u_status isip 'Active'
-        javax.swing.JOptionPane.showMessageDialog(null, "Invalid Credentials or Account Pending!");
+        // Triggers if the email/password combination is not found
+        javax.swing.JOptionPane.showMessageDialog(null, "Invalid Email or Password!", "Login Failed", javax.swing.JOptionPane.ERROR_MESSAGE);
     }
 
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -340,7 +335,7 @@ if (jPasswordField1.getEchoChar() == (char)0) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
             // Paghimo og object para ma-check ang isDisplayable()
-            Customer.customerdash dash = new Customer.customerdash(); 
+            Customer.customerdash dash = new Customer.customerdash(loggedInFullName); 
             if (dash.isDisplayable()) {
                 dash.setVisible(true);
             }
